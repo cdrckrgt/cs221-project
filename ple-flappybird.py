@@ -12,27 +12,23 @@ p.init()
 from rl.core import Env
 
 class CustomSpace(object):
-    def __init__(self):
-        self.actions = set([None, 119])
-        
+    def __init__(self, actions):
+        self.actions = actions        
+
     def sample(self):
         return random.choice(self.actions)
 
     def contains(self, x):
-        if x != None or x != 119: return False
-        return True
+        return x in self.actions
     
 class CustomEnv(Env):
     def __init__(self, p):
         self.p = p
         self.p.reset_game()
-        self.action_space = CustomSpace()
+        self.action_space = CustomSpace(self.p.getActionSet())
 
     def step(self, action):
-        if action == 0:
-            action = None
-        else:
-            action = 119
+        action = None if action == 0 else 119
         reward = self.p.act(action)
         obs = self.p.getScreenRGB()
         done = self.p.game_over()
@@ -46,7 +42,11 @@ class CustomEnv(Env):
         pass
 
 c = CustomEnv(p)
-print (c.reset().shape)
+# print (c.reset().shape)
+
+print("actions", p.getActionSet())
+import os
+os._exit(0)
 # keras stuff
 from keras.models import Sequential
 from keras.layers import Dense, Activation, Flatten, Conv2D
@@ -70,6 +70,7 @@ class MyAgent(object):
 
 myAgent = MyAgent(p.getActionSet())
 '''
+
 nb_actions = len(p.getActionSet())
 
 model = Sequential()
