@@ -1,8 +1,8 @@
 \BOOKMARK [1][-]{section.1}{Introduction}{}% 1
-\BOOKMARK [1][-]{section.2}{Approach}{}% 2
-\BOOKMARK [2][-]{subsection.2.1}{Method}{section.2}% 3
-\BOOKMARK [2][-]{subsection.2.2}{Baseline and Oracle}{section.2}% 4
-\BOOKMARK [2][-]{subsection.2.3}{Input / Output}{section.2}% 5
-\BOOKMARK [2][-]{subsection.2.4}{Infrastructure}{section.2}% 6
-\BOOKMARK [1][-]{section.3}{Related Works}{}% 7
-\BOOKMARK [1][-]{section.4}{Challenges}{}% 8
+\BOOKMARK [1][-]{section.2}{Related Works}{}% 2
+\BOOKMARK [1][-]{section.3}{Game Mechanics}{}% 3
+\BOOKMARK [1][-]{section.4}{Approach}{}% 4
+\BOOKMARK [2][-]{subsection.4.1}{Input / Output}{section.4}% 5
+\BOOKMARK [2][-]{subsection.4.2}{Infrastructure}{section.4}% 6
+\BOOKMARK [2][-]{subsection.4.3}{Baseline and Oracle}{section.4}% 7
+\BOOKMARK [1][-]{section.5}{Challenges}{}% 8

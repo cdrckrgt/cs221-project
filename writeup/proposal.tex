@@ -76,17 +76,22 @@ In this project we aim to apply transfer learning to the popular video game \tex
 
 
 \section{Introduction}
-For our project we are analyzing different reinforcement learning techniques in order to achieve superhuman ability in FlappyBird. 
-There are several approaches to solving this problem, including using search algorithms or game theory. 
-However, because they require specific feature definitions, scalability is a difficult task. 
-Our goal is to develop a more general framework to learn game specific features. 
-We want to explore the Q-Learning technique and Deep Q-Network to build a learned agent for this game to be played as long as possible. 
+Reinforcement learning is a technique for solving certain decision tasks, where an agent attempts to maximize a long-term reward through trial and error. 
+This trial and error paradigm is better explained through the lens of exploration and exploitation: the agent must decide whether it explores and learns new information, or exploits the current policy to maximize reward.
+We will primarily explore the applicability of deep Q-learning, a deep reinforcement learning algorithm, to the FlappyBird game.
 In addition, we intend to explore the impact of transfer learning, a machine learning technique where a model developed for a specific task is reused as the starting point for a model in a second task. 
-Our hope is that training our model in a similar environment to Flappy Bird will increase speed and performance. 
+Being able to transfer learn will allow us to develop a more general model for different tasks, saving time and effort.
+In particular, we aim to see whether transfer learning will speed up training time to reach the same performance level as the baseline, or whether transfer learning will allow the agent to reach even higher performance levels than the baseline.
 
+\section{Related Works}
+The impetus behind our project is DeepMind's paper, "Playing Atari with Deep Reinforcement Learning". Mnih et al. were able to show how a Deep Q-Network could take raw image pixels from an Atari game and estimate the $Q$ function. \cite{deepmind}
 
+Their model also takes advantage of recent advances in convolutional neural networks for image processing, a target network for stabilizing policy updates, and experience replay for a more efficient use of previous experience.
+Transfer learning is the idea that generalization occurs both within tasks and across tasks. \cite{transfer}
+Deep reinforcement learning may benefit from transfer learning, especially since convolutional neural networks are often used for playing games.
+Since convolutional neural networks often learn similar features in the first, second, etc. layers across a range of image classification tasks, it's possible that transfer learning in the context of reinforcement learning for video games can exploit this.
 
-\section{Approach}
+\section{Game Mechanics}
 
 The game of FlappyBird can be described as follows: a bird flies at a constant horizontal velocity $v_x$ and a variable veritcal velocity $v_y$. 
 The bird can flap its wings, giving it a boost in altitude and velocity $v_y$.
@@ -96,11 +101,12 @@ We model the problem as a Markov decision process with no knowledge of the trans
 The transition probabilities are unknown, since each state consists of the deterministic bird position and velocity, along with the non-deterministic pipe positions.
 The only reward signal received from the game in its standard implementation is when the bird flies past a pipe, giving us a reward of $1$. 
 This sparse reward makes it impossible for us to get an explicit reward for each $(s, a, s')$ tuple.
-The start state $s_{start}$ is the bird at a constant height, with no pipes on the screen.
+The start state $s_{start}$ is the bird at some constant height, with no pipes on the screen.
 The actions for every state are the same: the bird can flap its wings or not.
 The only exception to this are the end states $s_{end}$, where the bird collides with a pipe or the ground.
+In these cases, there are no actions to take, and the episode ends.
 
-\subsection{Method}
+\section{Approach}
 
 The goal of our project is twofold: we aim to evaluate deep reinforcement learning algorithms on the FlappyBird game, and also experiment with transfer learning to analyze the impact it makes on the training process. 
 
@@ -109,17 +115,10 @@ Thus, it will be necessary to use either function approximation to generalize to
 We envision using Deep Q-networks as a nice foray into deep learning, given our experience with Q-learning.
 
 
-Furthermore, we will demonstrate the ability for policies learned through deep reinforcement learning on FlappyBird to \textit{transfer} to other, similar games.
+Furthermore, we will demonstrate the ability for policies learned through deep reinforcement learning on FlappyBird to transfer to other games, such as those on OpenAI's gym platform. \cite{openaigym}
 This has been demonstrated before, particularly through the use of convolutional neural networks for playing games directly from pixels.
 
-\subsection{Baseline and Oracle}
-The baseline for this project is an agent trained with SARSA, with no transfer learning involved.
 
-The oracle for this project is the high score of a human who can play the game extremely well.
-Since the game isn't particularly difficult for humans and gameplay doesn't change dramatically throughout the game, it's possible for humans to play nearly indefinitely.
-After looking at high scores online through leaderboards and videos, the max legitimate score that we found was 999. 
-
-The gap between the baseline and oracle shows us \dots
 \subsection{Input / Output}
 % TODO: change this
 The input to our training models will be a prepossessed version of the PLE Games Version of Flappybird. 
@@ -135,11 +134,16 @@ We take advantage of these two here, writing simple wrappers for the PLE game in
 
 The keras-rl package additionally provides an implementation of several algorithms that are applicable to FlappyBird, particularly Deep Q-networks and the SARSA algorithm. 
 
-\section{Related Works}
-1. $\textit{TD-gammon}$ is a backgammon playing program built in 1995 which learned how to play the game entirely through RL and self play. 
-More specifically it used SARSA and a multi-layer perceptron for $Q_{opt}$ approximation.
-1. The main foundation around our inplementation of our Deep Reinforcement Learning model is Deepmind's 2013 paper "Playing Atari with Deep Reinforcement Learning". 
-In this paper the researches explain their implementation of an RL model which uses CNNs and Deep Learning to produce better results than conventional RL models like that used in $\textit{TD-gammon}$. \cite{einstein}
+\subsection{Baseline and Oracle}
+The baseline for this project is an agent trained with SARSA, with no transfer learning involved.
+
+The oracle for this project is the high score of a human who can play the game extremely well.
+Since the game isn't particularly difficult for humans and gameplay doesn't change dramatically throughout the game, it's possible for humans to play nearly indefinitely.
+After looking at high scores online through leaderboards and videos, the max legitimate score that we found was 999. 
+
+The gap between the baseline and oracle shows us \dots
+
+
 
 \section{Challenges}
 
