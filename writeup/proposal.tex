@@ -121,7 +121,8 @@ The infrastructure for the game comes mostly from the PyGame Learning Environmen
 The PyGame Learning Environment provides a nicely wrapped implementation of FlappyBird, complete with sprites and the relevant game mechanics built in. \cite{ple}
 Keras-rl provides a deep reinforcement learning framework that gives us a simple interface for training agents. 
 We take advantage of these two here, writing simple wrappers for the PLE game instance so that it is compatible with keras-rl. \cite{kerasrl}
-The keras-rl package additionally provides an implementation of several algorithms that are applicable to FlappyBird, particularly Deep Q-networks and the SARSA algorithm. 
+The keras-rl package additionally provides an implementation of several algorithms that are applicable to FlappyBird, particularly Deep Q-networks and the SARSA algorithm.
+Code for our project can be found at this \href{https://github.com/cdrckrgt/cs221-project} {link}.
 
 \subsection{Baseline and Oracle}
 The baseline for this project is an agent trained with SARSA on an $\epsilon$-greedy policy $\pi_{\epsilon}$.
