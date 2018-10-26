@@ -1,0 +1,151 @@
+\documentclass{article}
+
+% if you need to pass options to natbib, use, e.g.:
+% \PassOptionsToPackage{numbers, compress}{natbib}
+% before loading nips_2018
+
+% ready for submission
+% \usepackage{nips_2018}
+
+% to compile a preprint version, e.g., for submission to arXiv, add
+% add the [preprint] option:
+\usepackage[preprint]{nips_2018}
+
+% to compile a camera-ready version, add the [final] option, e.g.:
+% \usepackage[final]{nips_2018}
+
+% to avoid loading the natbib package, add option nonatbib:
+% \usepackage[nonatbib]{nips_2018}
+
+\usepackage[utf8]{inputenc} % allow utf-8 input
+\usepackage[T1]{fontenc}    % use 8-bit T1 fonts
+\usepackage{hyperref}       % hyperlinks
+\usepackage{url}            % simple URL typesetting
+\usepackage{booktabs}       % professional-quality tables
+\usepackage{amsfonts}       % blackboard math symbols
+\usepackage{nicefrac}       % compact symbols for 1/2, etc.
+\usepackage{microtype}      % microtypography
+
+\title{Deep Reinforcement Learning and Transfer Learning with FlappyBird}
+
+% The \author macro works with any number of authors. There are two
+% commands used to separate the names and addresses of multiple
+% authors: \And and \AND.
+%
+% Using \And between authors leaves it to LaTeX to determine where to
+% break the lines. Using \AND forces a line break at that point. So,
+% if LaTeX puts 3 of 4 authors names on the first line, and the last
+% on the second line, try using \AND instead of \And before the third
+% author name.
+
+\author{
+  Cedrick Argueta \\%\thanks{Use footnote for providing further
+    % information about author (webpage, alternative
+    % address)---\emph{not} for acknowledging funding agencies.} \\
+  Department of Computer Science\\
+  Stanford University\\
+  Stanford, CA 94305 \\
+  \texttt{cedrick@cs.stanford.edu} \\
+  %% examples of more authors
+  \And
+  Austin Chow \\
+  Department of Computer Science \\
+  Stanford University\\
+  Stanford, CA 94305 \\
+  \texttt{archow@cs.stanford.edu} \\
+  \And
+  Cristian Lomeli\\
+  Department of Computer Science \\
+  Stanford University\\
+  Stanford, CA 94305 \\
+  \texttt{clomeli@cs.stanford.edu} \\
+}
+
+\begin{document}
+% \nipsfinalcopy is no longer used
+
+\maketitle
+
+\begin{abstract}
+
+Reinforcement learning's growth in popularity in recent years is partly due to its ability to play some video games with a level of mastery that no human can reach. 
+Transfer learning is popular in the field of deep learning, and using pre-trained models on certain tasks speeds up training time and increases performance significantly. 
+In this project we aim to apply transfer learning to the popular video game \textit{FlappyBird} and analyze its performance compared to traditional reinforcement learning algorithms.
+ 
+\end{abstract}
+
+
+\section{Introduction}
+For our project we are analyzing different reinforcement learning techniques in order to achieve superhuman ability in FlappyBird. 
+There are several approaches to solving this problem, including using search algorithms or game theory. 
+However, because they require specific feature definitions, scalability is a difficult task. 
+Our goal is to develop a more general framework to learn game specific features. 
+We want to explore the Q-Learning technique and Deep Q-Network to build a learned agent for this game to be played as long as possible. 
+In addition, we intend to explore the impact of transfer learning, a machine learning technique where a model developed for a specific task is reused as the starting point for a model in a second task. 
+Our hope is that training our model in a similar environment to Flappy Bird will increase speed and performance. 
+
+
+
+\section{Approach}
+
+The game of FlappyBird can be described as follows: a bird flies at a constant horizontal velocity $v_x$ and a variable veritcal velocity $v_y$. 
+The bird can flap its wings, giving it a boost in altitude and velocity $v_y$.
+The aim of the game is to avoid randomly generated pipes that restrict the flying area, leaving only a small gap for the bird to fly through. 
+
+We model the problem as a Markov decision process with no knowledge of the transition probabilities or reward function at every state.
+The transition probabilities are unknown, since each state consists of the deterministic bird position and velocity, along with the non-deterministic pipe positions.
+The only reward signal received from the game in its standard implementation is when the bird flies past a pipe, giving us a reward of $1$. 
+This sparse reward makes it impossible for us to get an explicit reward for each $(s, a, s')$ tuple.
+The start state $s_{start}$ is the bird at a constant height, with no pipes on the screen.
+The actions for every state are the same: the bird can flap its wings or not.
+The only exception to this are the end states $s_{end}$, where the bird collides with a pipe or the ground.
+
+\subsection{Method}
+
+The goal of our project is twofold: we aim to evaluate deep reinforcement learning algorithms on the FlappyBird game, and also experiment with transfer learning to analyze the impact it makes on the training process. 
+
+Vanilla learning methods like Q-learning are not well suited to this problem, since the state space of the game is very large. The position of the bird and pipes are continuous values, and as such we have an almost-zero probability of reaching a particular state that we've seen before.
+Thus, it will be necessary to use either function approximation to generalize to unseen states or some form of deep learning that can extract features automatically.
+We envision using Deep Q-networks as a nice foray into deep learning, given our experience with Q-learning.
+
+
+Furthermore, we will demonstrate the ability for policies learned through deep reinforcement learning on FlappyBird to \textit{transfer} to other, similar games.
+This has been demonstrated before, particularly through the use of convolutional neural networks for playing games directly from pixels.
+
+\subsection{Baseline and Oracle}
+The baseline for this project is an agent trained with SARSA, with no transfer learning involved.
+
+The oracle for this project is the high score of a human who can play the game extremely well.
+Since the game isn't particularly difficult for humans and gameplay doesn't change dramatically throughout the game, it's possible for humans to play nearly indefinitely.
+After looking at high scores online through leaderboards and videos, the max legitimate score that we found was 999. 
+
+The gap between the baseline and oracle shows us \dots
+\subsection{Input / Output}
+% TODO: change this
+The input to our training models will be a prepossessed version of the PLE Games Version of Flappybird. 
+The input to the model will specifically be an 84 x 84 x 4 array, in which the 84 x 84 section of the array is a scaled down black and white image corresponding to a single frame of the game, and the x 4 corresponds to an array of four time separated frames from the game. 
+The output of our models is the optimum action (either jump or no jump), for any input array. 
+
+\subsection{Infrastructure}
+
+The infrastructure for the game comes mostly from the PyGame Learning Environment and keras-rl packages. 
+The PyGame Learning Environment provides a nicely wrapped implementation of FlappyBird, complete with sprites and the relevant game mechanics built in. 
+Keras-rl provides a deep reinforcement learning framework that gives us a simple interface for training agents. 
+We take advantage of these two here, writing simple wrappers for the PLE game instance so that it is compatible with keras-rl.
+
+The keras-rl package additionally provides an implementation of several algorithms that are applicable to FlappyBird, particularly Deep Q-networks and the SARSA algorithm. 
+
+\section{Related Works}
+1. $\textit{TD-gammon}$ is a backgammon playing program built in 1995 which learned how to play the game entirely through RL and self play. 
+More specifically it used SARSA and a multi-layer perceptron for $Q_{opt}$ approximation.
+1. The main foundation around our inplementation of our Deep Reinforcement Learning model is Deepmind's 2013 paper "Playing Atari with Deep Reinforcement Learning". 
+In this paper the researches explain their implementation of an RL model which uses CNNs and Deep Learning to produce better results than conventional RL models like that used in $\textit{TD-gammon}$. \cite{einstein}
+
+\section{Challenges}
+
+\bibliography{ref}
+\bibliographystyle{plain}
+
+
+\end{document}
+
