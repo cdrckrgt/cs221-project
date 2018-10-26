@@ -1,5 +1,9 @@
 import random
 import numpy as np
+import tensorflow as tf
+
+random.seed(4)
+tf.set_random_seed(4)
 
 # importing and creating the FlappyBird game
 from ple.games.flappybird import FlappyBird
@@ -14,11 +18,11 @@ def state_preprocessor(d):
 
 # custom reward values for the game
 reward_values = {
-    "tick" : 0.1,
-    "positive" : 0.5,
-    "negative" : 0.0,
-    "loss" : -1.0,
-    "win" : 1.0
+    "tick" : 0.1, # 0.1 reward for existing, incentive living longer
+    "positive" : 1.0, # 1.0 reward for passing pipe, incentivize passing them
+    "negative" : -1.0,
+    "loss" : -10.0, # -10.0 for dying, don't die!
+    "win" : 10.0
 }
 
 # putting the game in the PLE wrapper
@@ -109,10 +113,10 @@ p.display_screen = True
 from keras.callbacks import TensorBoard
 from keras.callbacks import ModelCheckpoint
 from time import time
-tb = TensorBoard(log_dir='./logs/{}'.format(time()))
+tb = TensorBoard(log_dir='../logs/{}'.format(time()))
 
-filepath='./weights/best.{}.hdf5'.format(time())
-cp = ModelCheckpoint(filepath, monitor='val_loss', verbose=1, save_best_only=True)
+filepath='../weights/best.{}.hdf5'.format(time())
+cp = ModelCheckpoint(filepath, verbose=1, period=5000)
 dqn.fit(env, nb_steps=50000, visualize=False, verbose=2, callbacks = [tb, cp])
 
 p.display_screen = True
