@@ -39,7 +39,7 @@
 % author name.
 
 \author{
-  Cedrick ~Argueta \\%\thanks{Use footnote for providing further
+  Cedrick Argueta \\%\thanks{Use footnote for providing further
     % information about author (webpage, alternative
     % address)---\emph{not} for acknowledging funding agencies.} \\
   Department of Computer Science\\
@@ -48,27 +48,17 @@
   \texttt{cedrick@cs.stanford.edu} \\
   %% examples of more authors
   \And
-  Austin ~Chow \\
+  Austin Chow \\
   Department of Computer Science \\
   Stanford University\\
   Stanford, CA 94305 \\
   \texttt{archow@stanford.edu} \\
   \AND
-  Cristian ~Lomeli\\
+  Cristian Lomeli\\
   Department of Computer Science \\
   Stanford University\\
   Stanford, CA 94305 \\
   \texttt{clomeli@stanford.edu} \\
-  %% \And
-  %% Coauthor \\
-  %% Affiliation \\
-  %% Address \\
-  %% \texttt{email} \\
-  %% \And
-  %% Coauthor \\
-  %% Affiliation \\
-  %% Address \\
-  %% \texttt{email} \\
 }
 
 \begin{document}
@@ -78,13 +68,17 @@
 
 \begin{abstract}
 
-Reinforcement learning's growth in popularity in recent years is partly due to its ability to play some video games with a level of mastery that no human can reach. In this paper we apply transfer learning to the popular video game \textit{FlappyBird} and analyze its performance to traditional reinforcement learning algorithms.
+Reinforcement learning's growth in popularity in recent years is partly due to its ability to play some video games with a level of mastery that no human can reach. Transfer learning is popular in the field of deep learning, and using pre-trained models on certain tasks speeds up training time and increases performance significantly. In this project we aim to apply transfer learning to the popular video game \textit{FlappyBird} and analyze its performance compared to traditional reinforcement learning algorithms.
  
 \end{abstract}
 
-\section{Introduction}
+\section{Introduction and Scope}
 
 \section{Approach}
+
+\subsection{Method}
+
+The goal of our project is twofold: we aim to evaluate deep reinforcement learning algorithms on the FlappyBird game, and also experiment with transfer learning and what impact it makes on the training process. 
 
 \subsection{Expected Behavior}
 
@@ -92,8 +86,9 @@ Austin, give input output behavior
 
 \subsection{Infrastructure}
 
-Cedrick, describe keras-rl and ple
+The infrastructure for the game comes mostly from the PyGame Learning Environment and keras-rl packages. The PyGame Learning Environment provides a nicely wrapped implementation of FlappyBird, complete with sprites and the relevant game mechanics built in. Keras-rl provides a deep reinforcement learning framework that provides a simple interface for training agents. We take advantage of these two here, writing simple wrappers for the PLE game instance so that it is compatible with keras-rl.
 
+The keras-rl package additionally provides an implementation of several algorithms that are applicable to FlappyBird, particularly Deep Q-networks and the SARSA algorithm. 
 \subsection{Baseline and Oracle}
 
 Cristian, define baseline and oracle

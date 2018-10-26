@@ -5,9 +5,25 @@ import numpy as np
 from ple.games.flappybird import FlappyBird
 game = FlappyBird()
 
+# to get nonvisual representations of the game, we need a state preprocessor
+def state_preprocessor(d):
+    a = []
+    for k in d:
+        a.append(d[k])
+    return np.array(a)
+
+# custom reward values for the game
+reward_values = {
+    "tick" : 0.1,
+    "positive" : 0.5,
+    "negative" : 0.0,
+    "loss" : -1.0,
+    "win" : 1.0
+}
+
 # putting the game in the PLE wrapper
 from ple import PLE
-p = PLE(game, fps=30, display_screen=True, force_fps=False)
+p = PLE(game, fps=30, display_screen=True, force_fps=False, state_preprocessor=state_preprocessor, reward_values=reward_values)
 p.init()
 
 # PLE wrapper doesn't follow same interface as keras-rl expects, so we
@@ -38,67 +54,44 @@ class CustomEnv(Env):
         self.p.reset_game()
         self.action_space = CustomSpace(self.p.getActionSet())
 
-    def step(self, action): # TODO: find out why action is only 0 or 1
-        action = None if action == 0 else 119
+    def step(self, action): 
+        action = self.action_space.actions[action]
         reward = self.p.act(action)
-        # TODO: find out what kind of preprocessing we can do
-        obs = self.p.getScreenRGB() 
+        obs = self.p.getGameState()
         done = self.p.game_over()
-        return np.array(obs), reward, done, {}
+        return obs, reward, done, {}
 
     def reset(self):
         self.p.reset_game()
-        return self.p.getScreenRGB()
+        return self.p.getGameState()
     
     def __del__(self):
         pass
 
+    def render(self, mode):
+        pass
+
 # creating the env for use with keras-rl
 env = CustomEnv(p)
-
-# creating a simple random agent
-"""
-class RandomAgent(object):
-    '''
-    The simplest agent that we can create. Performs random actions at every
-    step.
-    '''
-    def __init__(self, actions):
-        self.actions = actions
-
-    def pickAction(self, reward, obs):
-        return random.choice(self.actions)
-
-randAgent = RandomAgent(p.getActionSet())
-
-nb_frames = 1000
-reward = 0.0
-
-for _ in range(nb_frames):
-	if p.game_over(): #check if the game is over
-		p.reset_game()
-
-	obs = p.getScreenRGB()
-	action = myAgent.pickAction(reward, obs)
-	reward = p.act(action)
-"""
+print(env.reset().shape)
 
 # imports for the neural net
 from keras.models import Sequential
-from keras.layers import Dense, Activation, Flatten, Conv2D
+from keras.layers import Dense, Activation, Flatten, Conv2D, Permute
 from keras.optimizers import Adam
 
 # importing the desired drl agent
-from rl.agents.sarsa import SARSAAgent
+from rl.agents.dqn import DQNAgent
+from rl.memory import SequentialMemory
 
 nb_actions = len(p.getActionSet())
 
-# TODO: experiment with different architectures for the task
+input_shape = (1,) + env.reset().shape
 model = Sequential()
-model.add(Flatten(input_shape=(1,) + (288, 512, 3)))
-model.add(Dense(16))
+model.add(Flatten(input_shape=input_shape))
+model.add(Dense(256))
 model.add(Activation('relu'))
-model.add(Dense(16))
+model.add(Dense(128))
 model.add(Activation('relu'))
 model.add(Dense(16))
 model.add(Activation('relu'))
@@ -106,17 +99,22 @@ model.add(Dense(nb_actions))
 model.add(Activation('linear'))
 print(model.summary())
 
-sarsa = SARSAAgent(model=model, nb_actions=nb_actions)
-sarsa.compile(Adam(lr=1e-3), metrics=['mae'])
-
-p.display_screen = False
-
-from keras.callbacks import TensorBoard
-from time import time
-tb = TensorBoard(log_dir='./logs/{}'.format(time()))
-
-sarsa.fit(env, nb_steps=10000, visualize=False, verbose=2, callbacks = [tb])
+processor = None
+memory = SequentialMemory(limit=50000, window_length=1)
+dqn = DQNAgent(model=model, nb_actions=nb_actions, memory=memory, processor=processor, nb_steps_warmup=10, gamma=.99, target_model_update=1e-2)
+dqn.compile(Adam(lr=1e-3), metrics=['mae'])
 
 p.display_screen = True
 
-sarsa.test(c, nb_episodes=5, visualize=True)
+from keras.callbacks import TensorBoard
+from keras.callbacks import ModelCheckpoint
+from time import time
+tb = TensorBoard(log_dir='./logs/{}'.format(time()))
+
+filepath='./weights/best.{}.hdf5'.format(time())
+cp = ModelCheckpoint(filepath, monitor='val_loss', verbose=1, save_best_only=True)
+dqn.fit(env, nb_steps=50000, visualize=False, verbose=2, callbacks = [tb, cp])
+
+p.display_screen = True
+
+dqn.test(env, nb_episodes=5, visualize=True)
