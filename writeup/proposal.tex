@@ -39,26 +39,11 @@
 % author name.
 
 \author{
-  Cedrick Argueta \\%\thanks{Use footnote for providing further
-    % information about author (webpage, alternative
-    % address)---\emph{not} for acknowledging funding agencies.} \\
+  Cedrick Argueta, Austin Chow, Cristian Lomeli \\
   Department of Computer Science\\
   Stanford University\\
   Stanford, CA 94305 \\
-  \texttt{cedrick@cs.stanford.edu} \\
-  %% examples of more authors
-  \And
-  Austin Chow \\
-  Department of Computer Science \\
-  Stanford University\\
-  Stanford, CA 94305 \\
-  \texttt{archow@cs.stanford.edu} \\
-  \And
-  Cristian Lomeli\\
-  Department of Computer Science \\
-  Stanford University\\
-  Stanford, CA 94305 \\
-  \texttt{clomeli@cs.stanford.edu} \\
+  \texttt{\{cedrick, archow, clomeli\}@cs.stanford.edu} \\
 }
 
 \begin{document}
@@ -114,38 +99,59 @@ Vanilla learning methods like Q-learning are not well suited to this problem, si
 Thus, it will be necessary to use either function approximation to generalize to unseen states or some form of deep learning that can extract features automatically.
 We envision using Deep Q-networks as a nice foray into deep learning, given our experience with Q-learning.
 
-
-Furthermore, we will demonstrate the ability for policies learned through deep reinforcement learning on FlappyBird to transfer to other games, such as those on OpenAI's gym platform. \cite{openaigym}
-This has been demonstrated before, particularly through the use of convolutional neural networks for playing games directly from pixels.
+Furthermore, we will demonstrate the ability for policies learned through deep reinforcement learning on  other games to transfer to FlappyBird.
+The games on OpenAI's gym platform will interface well with the rest of our project. \cite{openaigym} \cite{ale}
+This has been demonstrated before, particularly through the use of convolutional neural networks for playing games directly from pixels. \cite{deepmind}
 
 
 \subsection{Input / Output}
-% TODO: change this
-The input to our training models will be a prepossessed version of the PLE Games Version of Flappybird. 
-The input to the model will specifically be an 84 x 84 x 4 array, in which the 84 x 84 section of the array is a scaled down black and white image corresponding to a single frame of the game, and the x 4 corresponds to an array of four time separated frames from the game. 
-The output of our models is the optimum action (either jump or no jump), for any input array. 
+
+For the first part of our project, our model is a neural network that takes as input the game state in vector form and outputs an action to take. 
+This neural network effectively approximates our $Q$-value function.
+The game state vector contains the bird position and velocity, as well as the pipe positions for the two next pipes.
+Outputs for the neural network are our actions, either a jump action or NOOP action.
+The model could be extended to take raw pixels as input, which would then increase the complexity of our model, as it'd require the use of convolution neural networks rather than the simple dense layers we have now.
+
+Transfer learning will involve training a similar model on a different game, such as \textit{Breakout} or \textit{Pong}.
+Then this trained model would serve as the starting point for the FlappyBird model.
 
 \subsection{Infrastructure}
 
-The infrastructure for the game comes mostly from the PyGame Learning Environment and keras-rl packages. 
-The PyGame Learning Environment provides a nicely wrapped implementation of FlappyBird, complete with sprites and the relevant game mechanics built in. 
+The infrastructure for the game comes mostly from the PyGame Learning Environment, OpenAI gym, and keras-rl packages. 
+The PyGame Learning Environment provides a nicely wrapped implementation of FlappyBird, complete with sprites and the relevant game mechanics built in. \cite{ple}
 Keras-rl provides a deep reinforcement learning framework that gives us a simple interface for training agents. 
-We take advantage of these two here, writing simple wrappers for the PLE game instance so that it is compatible with keras-rl.
-
+We take advantage of these two here, writing simple wrappers for the PLE game instance so that it is compatible with keras-rl. \cite{kerasrl}
 The keras-rl package additionally provides an implementation of several algorithms that are applicable to FlappyBird, particularly Deep Q-networks and the SARSA algorithm. 
 
 \subsection{Baseline and Oracle}
-The baseline for this project is an agent trained with SARSA, with no transfer learning involved.
+The baseline for this project is an agent trained with SARSA on an $\epsilon$-greedy policy $\pi_{\epsilon}$.
+The policy learned from SARSA algorithm described in Sutton and Barto updates the policy greedily based on $Q_{\pi_{\epsilon}}$. \cite{rl}
+We see that $Q_{\pi_{\epsilon}}$ will rarely get past the first pipe, even after 500 training episodes.
+The policy performs similarly to a random policy, albeit it does maximize the reward that can be attained without passing the first pipe.
+The rewards structure for the baseline is as follows:
+\begin{center}
+\begin{tabular} { | c | c | }
+    \hline
+    tick & $0.1$ \\
+    \hline
+    passed pipe & $1.0$ \\
+    \hline
+    collided & $-10.0$ \\
+    \hline
+\end{tabular}
+\end{center}
+where the agent receives a passive reward of $0.1$ for being alive each tick, and additional rewards for passing pipes and colliding with objects.
+
+Another baseline for this project is an inexperienced human player. 
+We have consistently been able to reach 10 pipes, but still occasionally fail earlier.
 
 The oracle for this project is the high score of a human who can play the game extremely well.
 Since the game isn't particularly difficult for humans and gameplay doesn't change dramatically throughout the game, it's possible for humans to play nearly indefinitely.
-After looking at high scores online through leaderboards and videos, the max legitimate score that we found was 999. 
+After looking at high scores online through leaderboards and videos, the maximum legitimate score that we found was 999. 
 
-The gap between the baseline and oracle shows us \dots
+The gap between the baseline and oracle shows us that there is room for improvement, and deep Q-learning will be able to bridge that gap.
+When we have the model that bridges the gap, we can analyze the training time and model performance after different amounts of training, and compare that to models that are pretrained on other games like Breakout or Pong.
 
-
-
-\section{Challenges}
 
 \bibliography{ref}
 \bibliographystyle{plain}
