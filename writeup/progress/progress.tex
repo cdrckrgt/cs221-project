@@ -68,9 +68,8 @@ In addition, we intend to explore the impact of transfer learning, a machine lea
 Being able to transfer learn will allow us to develop a more general model for different tasks, saving time and effort.
 In particular, we aim to see whether transfer learning will speed up training time to reach the same performance level as the baseline, or whether transfer learning will allow the agent to reach even higher performance levels than the baseline.
 
-\section{Related Works}
+\section{Related Work}
 The impetus behind our project is DeepMind's paper, "Playing Atari with Deep Reinforcement Learning". Mnih et al. were able to show how a Deep Q-Network could take raw image pixels from an Atari game and estimate the $Q$ function. \cite{deepmind}
-
 Their model also takes advantage of recent advances in convolutional neural networks for image processing, a target network for stabilizing policy updates, and experience replay for a more efficient use of previous experience.
 Transfer learning is the idea that generalization occurs both within tasks and across tasks. \cite{transfer}
 Deep reinforcement learning may benefit from transfer learning, especially since convolutional neural networks are often used for playing games.
@@ -103,6 +102,7 @@ Furthermore, we will demonstrate the ability for policies learned through deep r
 The games on OpenAI's gym platform will interface well with the rest of our project. \cite{openaigym} \cite{ale}
 This has been demonstrated before, particularly through the use of convolutional neural networks for playing games directly from pixels. \cite{deepmind}
 
+\textbf{Be more clear with approach, goals of the project}
 
 \subsection{Input / Output}
 
@@ -123,6 +123,8 @@ Keras-rl provides a deep reinforcement learning framework that gives us a simple
 We take advantage of these two here, writing simple wrappers for the PLE game instance so that it is compatible with keras-rl. \cite{kerasrl}
 The keras-rl package additionally provides an implementation of several algorithms that are applicable to FlappyBird, particularly Deep Q-networks and the SARSA algorithm.
 Code for our project can be found at this link: \href{https://github.com/cdrckrgt/cs221-project} {https://github.com/cdrckrgt/cs221-project}.
+
+\textbf{implement RL infra and TL w/RL infra}
 
 \subsection{Baseline and Oracle}
 The baseline for this project is an agent trained with SARSA on an $\epsilon$-greedy policy $\pi_{\epsilon}$.
@@ -153,7 +155,7 @@ After looking at high scores online through leaderboards and videos, the maximum
 The gap between the baseline and oracle shows us that there is room for improvement, and deep Q-learning will be able to bridge that gap.
 When we have the model that bridges the gap, we can analyze the training time and model performance after different amounts of training, and compare that to models that are pretrained on other games like Breakout or Pong.
 
-
+\textbf{show off DQN, compare with training other models}
 \bibliography{ref}
 \bibliographystyle{plain}
 
