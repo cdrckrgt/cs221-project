@@ -4,5 +4,5 @@ This project focuses on using transfer learning to improve training efficiency f
 
 Work was done for Stanford's CS221 class.
 
-Contact: `{cedrick, archow, clomeli}@stanford.edu`
+Contact: `{cedrick, archow, clomeli}@cs.stanford.edu`
 
