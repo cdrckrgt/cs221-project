@@ -8,6 +8,8 @@ tf.set_random_seed(4)
 # importing and creating the FlappyBird game
 from ple.games.flappybird import FlappyBird
 game = FlappyBird()
+# game.allowed_fps = None
+# game.scale = 10
 
 # to get nonvisual representations of the game, we need a state preprocessor
 def state_preprocessor(d):
@@ -18,7 +20,7 @@ def state_preprocessor(d):
 
 # custom reward values for the game
 reward_values = {
-    "tick" : 0.1, # 0.1 reward for existing, incentive living longer
+    "tick" : .1, # 0.1 reward for existing, incentive living longer
     "positive" : 1.0, # 1.0 reward for passing pipe, incentivize passing them
     "negative" : -1.0,
     "loss" : -10.0, # -10.0 for dying, don't die!
@@ -27,7 +29,7 @@ reward_values = {
 
 # putting the game in the PLE wrapper
 from ple import PLE
-p = PLE(game, fps=30, display_screen=True, force_fps=False, state_preprocessor=state_preprocessor, reward_values=reward_values)
+p = PLE(game, fps=30, display_screen=True, force_fps=True, state_preprocessor=state_preprocessor, reward_values=reward_values)
 p.init()
 
 # PLE wrapper doesn't follow same interface as keras-rl expects, so we
@@ -40,14 +42,14 @@ class CustomSpace(object):
     A space object that defines the actions that we can take during each step.
     '''
     def __init__(self, actions):
-        self.actions = actions        
+        self.actions = actions
 
     def sample(self):
         return random.choice(self.actions)
 
     def contains(self, x):
         return x in self.actions
-    
+
 class CustomEnv(Env):
     '''
     A custom wrapper for the Env class, allowing us to use keras-rl with games
@@ -58,7 +60,7 @@ class CustomEnv(Env):
         self.p.reset_game()
         self.action_space = CustomSpace(self.p.getActionSet())
 
-    def step(self, action): 
+    def step(self, action):
         action = self.action_space.actions[action]
         reward = self.p.act(action)
         obs = self.p.getGameState()
@@ -68,7 +70,7 @@ class CustomEnv(Env):
     def reset(self):
         self.p.reset_game()
         return self.p.getGameState()
-    
+
     def __del__(self):
         pass
 
@@ -104,8 +106,8 @@ model.add(Activation('linear'))
 print(model.summary())
 
 processor = None
-memory = SequentialMemory(limit=50000, window_length=1)
-dqn = DQNAgent(model=model, nb_actions=nb_actions, memory=memory, processor=processor, nb_steps_warmup=10, gamma=.99, target_model_update=1e-2)
+memory = SequentialMemory(limit=20000, window_length=1)
+dqn = DQNAgent(model=model, nb_actions=nb_actions, memory=memory, processor=processor, nb_steps_warmup=10, gamma=.99, target_model_update=0.5)
 dqn.compile(Adam(lr=1e-3), metrics=['mae'])
 
 p.display_screen = True
@@ -116,9 +118,9 @@ from time import time
 t = time()
 tb = TensorBoard(log_dir='../../logs/flappybird/{}'.format(t))
 
-filepath='../../weights/flappybird/best.{}.hdf5'.format(t)
+filepath='../../weights/flappybird/best_{}.hdf5'.format(t)
 cp = ModelCheckpoint(filepath, verbose=1, period=5000)
-dqn.fit(env, nb_steps=50000, visualize=False, verbose=2, callbacks = [tb, cp])
+dqn.fit(env, nb_steps=5000, visualize=False, verbose=2, callbacks = [tb, cp])
 
 p.display_screen = True
 
