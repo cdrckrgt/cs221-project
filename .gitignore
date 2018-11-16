@@ -1,2 +1,8 @@
-logs/*
-weights/*
+logs/flappybird/*
+logs/pixelcopter/*
+logs/catcher/*
+logs/pong/*
+weights/flappybird/*
+weights/pixelcopter/*
+weights/catcher/*
+weights/pong/*
