@@ -26,6 +26,12 @@
 \usepackage{nicefrac}       % compact symbols for 1/2, etc.
 \usepackage{microtype}      % microtypography
 
+\usepackage{amsmath}
+\usepackage{graphicx}       % including images
+\graphicspath{ {./images/} }
+\usepackage{algorithm}
+\usepackage{algpseudocode}  % including algorithms
+
 \title{Deep Reinforcement Learning and Transfer Learning with FlappyBird}
 
 % The \author macro works with any number of authors. There are two
@@ -66,7 +72,7 @@ This trial and error paradigm is better explained through the lens of exploratio
 We will primarily explore the applicability of deep Q-learning, a deep reinforcement learning algorithm, to the FlappyBird game.
 In addition, we intend to explore the impact of transfer learning, a machine learning technique where a model developed for a specific task is reused as the starting point for a model in a second task. 
 Being able to transfer learn will allow us to develop a more general model for different tasks, saving time and effort.
-In particular, we aim to see whether transfer learning will speed up training time to reach the same performance level as the baseline, or whether transfer learning will allow the agent to reach even higher performance levels than the baseline.
+In particular, we aim to see whether transfer learning will speed up training time to reach the same performance level as the DQN model.
 
 \section{Related Work}
 The impetus behind our project is DeepMind's paper, "Playing Atari with Deep Reinforcement Learning". Mnih et al. were able to show how a Deep Q-Network could take raw image pixels from an Atari game and estimate the $Q$ function. \cite{deepmind}
@@ -90,6 +96,8 @@ The actions for every state are the same: the bird can flap its wings or not.
 The only exception to this are the end states $s_{end}$, where the bird collides with a pipe or the ground.
 In these cases, there are no actions to take, and the episode ends.
 
+We have a similar model for each game that we experiment with: \textit{Pong, Catcher}, and \textit{PixelCopter}.
+
 \section{Approach}
 
 The goal of our project is twofold: we aim to evaluate deep reinforcement learning algorithms on the FlappyBird game, and also experiment with transfer learning to analyze the impact it makes on the training process. 
@@ -97,34 +105,29 @@ The goal of our project is twofold: we aim to evaluate deep reinforcement learni
 Vanilla learning methods like Q-learning are not well suited to this problem, since the state space of the game is very large. The position of the bird and pipes are continuous values, and as such we have an almost-zero probability of reaching a particular state that we've seen before.
 Thus, it will be necessary to use either function approximation to generalize to unseen states or some form of deep learning that can extract features automatically.
 We envision using Deep Q-networks as a nice foray into deep learning, given our experience with Q-learning.
+The DQN model uses a neural network to approximate the Q action-value function, and allows for better generalization than the standard Q-learning approach.
 
 Furthermore, we will demonstrate the ability for policies learned through deep reinforcement learning on  other games to transfer to FlappyBird.
-The games on OpenAI's gym platform will interface well with the rest of our project. \cite{openaigym} \cite{ale}
 This has been demonstrated before, particularly through the use of convolutional neural networks for playing games directly from pixels. \cite{deepmind}
-
-\textbf{Be more clear with approach, goals of the project}
-
-\subsection{Input / Output}
-
-For the first part of our project, our model is a neural network that takes as input the game state in vector form and outputs an action to take. 
-This neural network effectively approximates our $Q$-value function.
-The game state vector contains the bird position and velocity, as well as the pipe positions for the two next pipes.
-Outputs for the neural network are our actions, either a jump action or NOOP action.
-The model could be extended to take raw pixels as input, which would then increase the complexity of our model, as it'd require the use of convolution neural networks rather than the simple dense layers we have now.
-
-Transfer learning will involve training a similar model on a different game, such as \textit{Breakout} or \textit{Pong}.
-Then this trained model would serve as the starting point for the FlappyBird model.
+In our case specifically, we will develop a Q-network parameterized by weights $\theta_{FlappyBird}$ that performs 'well enough' on FlappyBird, along with Q-networks parameterized by $\theta_{Pong}, \theta_{Catcher}, \theta_{PixelCopter}$ that perform 'well enough' on the games Pong, Catcher, and PixelCopter.
+These networks will be initialized through Xavier initialization. \cite{xavier}
+Once we have this, we will begin training new Q-networks parameterized by $\theta'_{Pong}, \theta'_{Catcher}, \theta'_{PixelCopter}$ that were initialized with $\theta_{FlappyBird}$.
+We do this by fixing weights up until the final hidden layer, and solely training those weights.
+This gives the effect of reducing the number of parameters needed for optimization, making our training faster and more efficient.
+We will then compare the training times and absolute performance of the $\theta$ and $\theta'$ models, demonstrating the increase in efficiency or performance that transfer learning entails.
 
 \subsection{Infrastructure}
 
 The infrastructure for the game comes mostly from the PyGame Learning Environment, OpenAI gym, and keras-rl packages. 
-The PyGame Learning Environment provides a nicely wrapped implementation of FlappyBird, complete with sprites and the relevant game mechanics built in. \cite{ple}
+The PyGame Learning Environment provides a nicely wrapped implementation of FlappyBird, complete with sprites and the relevant game mechanics built in. \cite{ple} \cite{openaigym} \cite{ale}
 Keras-rl provides a deep reinforcement learning framework that gives us a simple interface for training agents. 
 We take advantage of these two here, writing simple wrappers for the PLE game instance so that it is compatible with keras-rl. \cite{kerasrl}
 The keras-rl package additionally provides an implementation of several algorithms that are applicable to FlappyBird, particularly Deep Q-networks and the SARSA algorithm.
-Code for our project can be found at this link: \href{https://github.com/cdrckrgt/cs221-project} {https://github.com/cdrckrgt/cs221-project}.
+For the transfer learning portion of the project, we saved weights info \texttt{hdf5} files with the Keras package.
+The neural networks and much of the other deep learning architecture was also created in Keras, with a TensorFlow backend. \cite{keras} \cite{tensorflow}
+This allowed us to monitor training time and other metrics inside TensorBoard.
 
-\textbf{implement RL infra and TL w/RL infra}
+Code for our project can be found at this link: \href{https://github.com/cdrckrgt/cs221-project} {https://github.com/cdrckrgt/cs221-project}.
 
 \subsection{Baseline and Oracle}
 The baseline for this project is an agent trained with SARSA on an $\epsilon$-greedy policy $\pi_{\epsilon}$.
@@ -150,20 +153,214 @@ We have consistently been able to reach 10 pipes, but still occasionally fail ea
 
 The oracle for this project is the high score of a human who can play the game extremely well.
 Since the game isn't particularly difficult for humans and gameplay doesn't change dramatically throughout the game, it's possible for humans to play nearly indefinitely.
-After looking at high scores online through leaderboards and videos, the maximum legitimate score that we found was 999. 
 
 The gap between the baseline and oracle shows us that there is room for improvement, and deep Q-learning will be able to bridge that gap.
-When we have the model that bridges the gap, we can analyze the training time and model performance after different amounts of training, and compare that to models that are pretrained on other games like Breakout or Pong.
-
 
 \section{Model}
 
-a
-\textbf{show off DQN, compare with training other models} \\
-\textbf{this section contains the DQN} \\
-\textbf{concrete example of how DQN works} \\
-\textbf{explain states clearly} \\
-\textbf{show DQN, record training time, compare training time with pre-trained model on other games (this is the transfer learning)} \\
+In this section, we describe the DQN algorithm and how it applies to our task. We use a modified version of the algorithm described in the 2013 DeepMind paper.
+
+Again, we model the environment $\mathcal{E}$ as a Markov decision process with no knowledge of the transition probabilities or reward function at every state.
+There is a set of actions that may be taken at every time-step, designated $\mathcal{A}$.
+Each interaction between the agent and its environment at time $t$ produces an observation $x_t \in \mathbb{R}^{d}$ and reward $r_t$, where $d$ is the dimensionality of the environment.
+
+As in the standard Q-learning algorithm, we consider sequences of observations, actions, and rewards $x_1, a_1, r_1, \dots, x_t, a_t, r_t$ as the state of $\mathcal{E}$ at time $t$. 
+The objective of the agent is to maximize its future reward, defined as:
+\begin{equation}
+\displaystyle R_t = \sum_{t' = t}^{T} \gamma^{t' - t}r_{t'}
+\end{equation}
+such that $T$ is the termination time-step of the game.
+Then the optimal Q-value function is defined as follows:
+\begin{equation}
+\displaystyle Q^{*}(s, a) = \max_{\pi}\mathbb{E}[R_t\ |\ s_t = s, a_t = a, \pi]
+\end{equation}
+such that $\pi$ is a policy that maps states to actions.
+So far we have described steps to arriving at the Q-learning algorithm described by Dayans and Watkins. \cite{qlearning} 
+The DQN algorithm presented by DeepMind makes numerous improvement on this algorithm by introducing a non-linear function approximator and experience replay.
+
+\subsection{The Q-network}
+Since the vanilla Q-learning algorithm does not generalize well to state spaces as large as those encountered in Atari games, we use a neural network to approximate the Q-value function. 
+Then we have a neural network parametrized by weights $\theta$ such that $Q(s, a; \theta) \approx Q^{*}(s, a)$.
+At every iteration of training $i$, we minimize the squared error between the current Q-function and the optimal Q-function, according to the loss function:
+\begin{equation}
+\displaystyle L_i(\theta_i) = \mathbb{E}_{s, a \sim \rho(\cdot)}[(y_i - Q(s, a; \theta_i))^2]
+\end{equation}
+where $y_i = \mathbb{E}_{s' \sim \mathcal{E}}[r + \gamma\max_{a'}Q(s', a'; \theta_{i - 1}\ |\ s, a]$ and $\rho(s, a)$ is a probability distribution over states and actions. 
+The intuition behind this loss function is that we are minimizing the distance between our target, which is the maximum expected future reward for this state and the previous iteration's weights, and our current Q value.
+We are effectively getting closer and closer to the true Q values every training iteration.
+To minimize this objective function, we update the weights according to the gradient:
+\begin{equation}
+\displaystyle \nabla_{\theta_i}L_i(\theta_i) = \mathbb{E}_{s, a \sim \rho(\cdot)}[(r + \gamma \max_{a'}Q(s', a'; \theta_{i - 1}) - Q(s, a; \theta_i))\nabla_{\theta_i}Q(s, a; \theta_i)]
+\end{equation}
+And we've now arrived at the Deep Q-network algorithm that we can apply to our task.
+It's important to note that the original DQN paper applies this algorithm to raw pixel vectors as each $x_t$, whereas we use the internal game state for each $x_t$.
+This allows us to achieve the same level of performance in a much quicker fashion, since we don't need to spend the extra compute power on training a convolutional neural network to learn features for each game.
+The algorithm, lifted from Mnih's paper, is described in \ref{alg:dqn}.
+
+\begin{algorithm}
+\caption{Deep Q-learning with Experience Replay}
+\label{alg:dqn}
+\begin{algorithmic}[1]
+\State Initialize replay memory $\mathcal{D}$ to capacity $N$
+\State Initialize action-value function $Q$ with random weights
+\For{$\textrm{episode} = 1, M$}
+    \State Initialize sequence $s_1 = \{x_1\}$ and preprocessed sequenced $\phi_1 = \phi(s_1)$
+    \For{$t = 1, T$}
+        \State With probability $\epsilon$ select a random action $a_t$
+        \State otherwise select $a_t = \max_{a}Q^{*}(\phi(s_t), a; \theta)$
+        \State Execute action $a_t$ in emulator and observe reward $r_t$ and observation $x_{t + 1}$
+        \State Set $s_{t + 1} = s_t, a_t, x_{t + 1}$ and preprocess $\phi_{t + 1} = \phi(s_{t + 1})$
+        \State Store transition $(\phi_t, a_t, r_t, \phi_{t + 1})$ in $\mathcal{D}$
+        \State Sample random minibatch of transitions $(\phi_j, a_j, r_j, \phi_{j + 1})$
+        \State Set $ \displaystyle  y_j = 
+                        \begin{cases}
+                            r_j & \textrm{for terminal} \phi_{j + 1} \\
+                            r_j + \gamma\max_{a'}Q(\phi_{j + 1}, a'; \theta) & \textrm{for non-terminal} \phi_{j + 1} \\
+                        \end{cases}
+                   $
+        \State Perform a gradient descent step on $(y_j - !(\phi_j, a_j; \theta))^2$ according to 
+    \EndFor
+\EndFor
+\end{algorithmic}
+\end{algorithm}
+
+\subsection{Experience Replay}
+Additionally, the algorithm presented in Mnih's paper makes use of experience replay to smooth learning and prevent divergence.
+Rather than performing gradient updates on each consecutive sample, samples are stored in a ring buffer and sampled randomly during the learning phase of the algorithm. 
+This has the effect of improving sample efficiency and removing the dependence of each training update on the previous training update.
+
+\subsection{Target Network}
+Finally, we make use of a target network to further stabilize the training process. 
+Note that during our gradient descent, the weights that produce our target values shift every iteration.
+Instead of using these rapidly shifting weights, we copy the parameters of the training network $\theta_{training}$ to a second, identical model $\theta_{target}$.
+With this identical model, we may compute the same targets, albeit with less variance by only updating the $\theta_{target}$ to match the $\theta_{training}$ with some fixed, low probability at every iteration.
+
+\subsection{Model Architecture}
+Since we use as input to the Q-network the internal game state representation as opposed to the raw pixel inputs, we don't make use of a convolutional neural network to learn features directly from the game's pizels.
+We instead make use of a multi-layered perceptron that takes as input the game's state in vector form.
+In the case of FlappyBird, the state vector is a vector in $\mathbb{R}^8$, and contains the bird's position, velocity, and the distance, top, and bottom positions of the next two pipes.
+The dimensionality of the input differed for each game we worked with, but we kept the dimensionality of the hidden layers the same for each game so that we could experiment with transfer learning.
+The outputs of the Q-network for each game were the Q-values of all actions in the action space for that game.
+In the case of FlappyBird, the output was two Q-values in $\mathbb{R}$, one for the action to jump, and the null action.
+
+\section{Preliminary Results}
+
+\subsection{Vanilla DQN}
+After finalizing the DQN algorithm, we experimented with different hyperparameters and had to define performance metrics to compare the base DQN models with the transfer learned models. 
+The hyperparameters for the models trained from scratch are shown in table \ref{hyperparams-xavier}.
+We see in the graph \ref{fig:flappy-training} the variance in episode reward over different random seeds.
+The DQN performs well above the ability of the average human, since it averages scores in the thousands while testing.
+Reaching this level of performance required, on average, $20000$ iterations.
+
+\begin{table}[h!]
+\centering
+\begin{tabular}{ll}
+
+\multicolumn{2}{ c }{ \textbf{Hyperparameters for Xavier-initialized networks} } \\
+
+\\
+
+    \begin{tabular}{| c | c |}
+    \hline
+    \multicolumn{2}{| c |}{FlappyBird Hyperparameters} \\ 
+    \hline
+    Target Model Update & 1000 \\
+    \hline
+    Learning Rate & 1000 \\
+    \hline
+    $\dots$ & $\dots$ \\
+    \hline
+    tick & $0.1$ \\
+    \hline
+    passed pipe & $1.0$ \\
+    \hline
+    collided & $-10.0$ \\
+    \hline
+    \end{tabular}
+
+&
+
+    \begin{tabular}{| c | c |}
+    \hline
+    \multicolumn{2}{| c |}{Pong Hyperparameters} \\ 
+    \hline
+    Target Model Update & 1000 \\
+    \hline
+    Learning Rate & 1000 \\
+    \hline
+    $\dots$ & $\dots$ \\
+    \hline
+    tick & $0.1$ \\
+    \hline
+    passed pipe & $1.0$ \\
+    \hline
+    collided & $-10.0$ \\
+    \hline
+    \end{tabular}
+
+\\
+\\
+
+    \begin{tabular}{| c | c |}
+    \hline
+    \multicolumn{2}{| c |}{Catcher Hyperparameters} \\ 
+    \hline
+    Target Model Update & 1000 \\
+    \hline
+    Learning Rate & 1000 \\
+    \hline
+    $\dots$ & $\dots$ \\
+    \hline
+    tick & $0.1$ \\
+    \hline
+    passed pipe & $1.0$ \\
+    \hline
+    collided & $-10.0$ \\
+    \hline
+    \end{tabular}
+
+&
+
+    \begin{tabular}{| c | c |}
+    \hline
+    \multicolumn{2}{| c |}{PixelCopter Hyperparameters} \\ 
+    \hline
+    Target Model Update & 1000 \\
+    \hline
+    Learning Rate & 1000 \\
+    \hline
+    $\dots$ & $\dots$ \\
+    \hline
+    tick & $0.1$ \\
+    \hline
+    passed pipe & $1.0$ \\
+    \hline
+    collided & $-10.0$ \\
+    \hline
+    \end{tabular}
+
+\\
+
+\end{tabular}
+\caption{These hyperparameters were obtained with lots of trial and error.}\label{hyperparams-xavier}
+\end{table}
+
+\begin{figure}[h!]
+\includegraphics[width=0.5\textwidth]{test-tensorboard}
+\label{fig:flappy-training}
+\end{figure}
+
+\begin{figure}[h!]
+\includegraphics[width=0.5\textwidth]{test-tensorboard}
+\label{fig:other-training}
+\end{figure}
+
+To experiment with the effectiveness of transfer learning, we separately trained Q-networks on the games Pong, Catcher, and PixelCopter.
+Additionally, we show the training times for the Xavier-initialized models in figure \ref{fig:other-training}.
+
+\subsection{Transfer Learning}
+We show here the effectiveness of using pre-trained weights from FlappyBird on the games Pong, Catcher, and PixelCopter.
+
 \bibliography{ref}
 \bibliographystyle{plain}
 
