@@ -111,9 +111,9 @@ p.display_screen = True
 from keras.callbacks import TensorBoard
 from keras.callbacks import ModelCheckpoint
 from time import time
-tb = TensorBoard(log_dir='../logs/{}'.format(time()))
+tb = TensorBoard(log_dir='../../logs/{}'.format(time()))
 
-filepath='../weights/best.{}.hdf5'.format(time())
+filepath='../../weights/best.{}.hdf5'.format(time())
 cp = ModelCheckpoint(filepath, verbose=1, period=5000)
 sarsa.fit(env, nb_steps=50000, visualize=False, verbose=2, callbacks = [tb, cp])
 

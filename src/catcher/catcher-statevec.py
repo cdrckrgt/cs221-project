@@ -6,8 +6,8 @@ random.seed(4)
 tf.set_random_seed(4)
 
 # importing and creating the FlappyBird game
-from ple.games.pixelcopter import Pixelcopter
-game = Pixelcopter(width = 192, height = 192)
+from ple.games.catcher import Catcher
+game = Catcher(width = 192, height = 192)
 
 # to get nonvisual representations of the game, we need a state preprocessor
 def state_preprocessor(d):
@@ -113,9 +113,10 @@ p.display_screen = True
 from keras.callbacks import TensorBoard
 from keras.callbacks import ModelCheckpoint
 from time import time
-tb = TensorBoard(log_dir='../logs/{}'.format(time()))
+t = time()
+tb = TensorBoard(log_dir='../../logs/catcher/{}'.format(t))
 
-filepath='../weights/best.{}.hdf5'.format(time())
+filepath='../../weights/catcher/best.{}.hdf5'.format(t)
 cp = ModelCheckpoint(filepath, verbose=1, period=5000)
 dqn.fit(env, nb_steps=50000, visualize=False, verbose=2, callbacks = [tb, cp])
 

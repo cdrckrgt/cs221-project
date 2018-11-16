@@ -6,8 +6,8 @@ random.seed(4)
 tf.set_random_seed(4)
 
 # importing and creating the FlappyBird game
-from ple.games.flappybird import FlappyBird
-game = FlappyBird()
+from ple.games.pixelcopter import Pixelcopter
+game = Pixelcopter(width = 192, height = 192)
 
 # to get nonvisual representations of the game, we need a state preprocessor
 def state_preprocessor(d):
@@ -40,14 +40,14 @@ class CustomSpace(object):
     A space object that defines the actions that we can take during each step.
     '''
     def __init__(self, actions):
-        self.actions = actions        
+        self.actions = actions
 
     def sample(self):
         return random.choice(self.actions)
 
     def contains(self, x):
         return x in self.actions
-    
+
 class CustomEnv(Env):
     '''
     A custom wrapper for the Env class, allowing us to use keras-rl with games
@@ -58,7 +58,7 @@ class CustomEnv(Env):
         self.p.reset_game()
         self.action_space = CustomSpace(self.p.getActionSet())
 
-    def step(self, action): 
+    def step(self, action):
         action = self.action_space.actions[action]
         reward = self.p.act(action)
         obs = self.p.getGameState()
@@ -68,7 +68,7 @@ class CustomEnv(Env):
     def reset(self):
         self.p.reset_game()
         return self.p.getGameState()
-    
+
     def __del__(self):
         pass
 
@@ -113,9 +113,10 @@ p.display_screen = True
 from keras.callbacks import TensorBoard
 from keras.callbacks import ModelCheckpoint
 from time import time
-tb = TensorBoard(log_dir='../logs/{}'.format(time()))
+t = time()
+tb = TensorBoard(log_dir='../../logs/pixelcopter/{}'.format(t))
 
-filepath='../weights/best.{}.hdf5'.format(time())
+filepath='../../weights/pixelcopter/best.{}.hdf5'.format(t)
 cp = ModelCheckpoint(filepath, verbose=1, period=5000)
 dqn.fit(env, nb_steps=50000, visualize=False, verbose=2, callbacks = [tb, cp])
 
