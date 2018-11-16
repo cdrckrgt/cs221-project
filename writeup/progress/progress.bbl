@@ -1,0 +1,40 @@
+\begin{thebibliography}{1}
+
+\bibitem{ale}
+Marc~G. Bellemare, Yavar Naddaf, Joel Veness, and Michael Bowling.
+\newblock The arcade learning environment: An evaluation platform for general
+  agents.
+\newblock {\em CoRR}, abs/1207.4708, 2012.
+
+\bibitem{openaigym}
+Greg Brockman, Vicki Cheung, Ludwig Pettersson, Jonas Schneider, John Schulman,
+  Jie Tang, and Wojciech Zaremba.
+\newblock Openai gym.
+\newblock {\em CoRR}, abs/1606.01540, 2016.
+
+\bibitem{deepmind}
+Volodymyr Mnih, Koray Kavukcuoglu, David Silver, Alex Graves, Ioannis
+  Antonoglou, Daan Wierstra, and Martin~A. Riedmiller.
+\newblock Playing atari with deep reinforcement learning.
+\newblock {\em CoRR}, abs/1312.5602, 2013.
+
+\bibitem{kerasrl}
+Matthias Plappert.
+\newblock keras-rl, 2016.
+
+\bibitem{rl}
+Richard~S. Sutton and Andrew~G. Barto.
+\newblock {\em Reinforcement Learning: An Introduction}.
+\newblock MIT Press, 2015.
+
+\bibitem{ple}
+Norman Tasfi.
+\newblock Pygame learning environment.
+\newblock \url{https://github.com/ntasfi/PyGame-Learning-Environment}, 2016.
+
+\bibitem{transfer}
+Matthew~E. Taylor and Peter Stone.
+\newblock Transfer learning for reinforcement learning domains: A survey.
+\newblock {\em JMLR}, 10, 2009.
+
+\end{thebibliography}

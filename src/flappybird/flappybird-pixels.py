@@ -125,7 +125,7 @@ p.display_screen = True
 
 from keras.callbacks import TensorBoard
 from time import time
-tb = TensorBoard(log_dir='./logs/{}'.format(time()))
+tb = TensorBoard(log_dir='../../logs/{}'.format(time()))
 
 dqn.fit(env, nb_steps=50000, visualize=False, verbose=2, callbacks = [tb])
 
