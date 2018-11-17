@@ -18,15 +18,11 @@ def state_preprocessor(d):
 
 # custom reward values for the game
 reward_values = {
-    "tick" : 0.001, # 0.1 reward for existing, incentive living longer
-<<<<<<< HEAD
-    "positive" : 30, # 1.0 reward for passing pipe, incentivize passing them
-=======
-    "positive" : 1.0, # 1.0 reward for passing pipe, incentivize passing them
->>>>>>> 3c87857d1099afd6b862d611dbe9c5ab47ea5fe2
-    "negative" : -1.0,
-    "loss" : -3.0, # -10.0 for dying, don't die!
-    "win" : 10.0
+    "tick" : 0.0001, # 0.1 reward for existing, incentive living longer
+    "positive" : 1, # 1.0 reward for passing pipe, incentivize passing them
+    "negative" : -.1,
+    "loss" : -1.0, # -10.0 for dying, don't die!
+    "win" : 10
 }
 
 # putting the game in the PLE wrapper
@@ -106,8 +102,6 @@ model.add(Activation('relu'))
 model.add(Dense(nb_actions))
 model.add(Activation('linear'))
 print(model.summary())
-
-<<<<<<< HEAD
 # from rl.policy import EpsGreedyQPolicy,BoltzmannQPolicy
 
 
@@ -183,17 +177,9 @@ class EpsGreedyQPolicy(Policy):
         config['eps'] = self.eps
         return config
 
-
 processor = None
 memory = SequentialMemory(limit=50000, window_length=1)
-dqn = DQNAgent(model=model,policy = EpsGreedyQPolicy(decay = .999), nb_actions=nb_actions, memory=memory, processor=processor, nb_steps_warmup=10, gamma=.99, target_model_update=1e-2)
-=======
-from rl.policy import EpsGreedyQPolicy,BoltzmannQPolicy
-
-processor = None
-memory = SequentialMemory(limit=50000, window_length=1)
-dqn = DQNAgent(model=model,policy = None, nb_actions=nb_actions, memory=memory, processor=processor, nb_steps_warmup=10, gamma=.99, target_model_update=1e-2)
->>>>>>> 3c87857d1099afd6b862d611dbe9c5ab47ea5fe2
+dqn = DQNAgent(model=model,policy = EpsGreedyQPolicy(decay = .999), nb_actions=nb_actions, memory=memory, processor=processor, nb_steps_warmup=50, gamma=.99, target_model_update=1e-2)
 dqn.compile(Adam(lr=1e-4), metrics=['mae'])
 
 p.display_screen = True
