@@ -110,8 +110,12 @@ from rl.policy import EpsGreedyQPolicy, BoltzmannQPolicy
 
 processor = None
 memory = SequentialMemory(limit=25000, window_length=1)
+<<<<<<< HEAD
+dqn = DQNAgent(model=model, nb_actions=nb_actions, memory=memory, processor=processor, nb_steps_warmup=10, gamma=.99, target_model_update=0.01)
+=======
 policy = EpsGreedyQPolicy(0.1)
 dqn = DQNAgent(model=model,policy=policy, nb_actions=nb_actions, memory=memory, processor=processor, nb_steps_warmup=100, gamma=.99, target_model_update=1e-2)
+>>>>>>> 8257f48b71686ea2cb99a8d10e6aa134e05cef88
 dqn.compile(Adam(lr=1e-3), metrics=['mae'])
 
 p.display_screen = True
