@@ -6,6 +6,7 @@ random.seed(4)
 
 import tensorflow as tf
 tf.set_random_seed(4)
+np.random.seed(4)
 
 # importing and creating the FlappyBird game
 from ple.games.flappybird import FlappyBird
@@ -120,10 +121,8 @@ from rl.callbacks import ModelIntervalCheckpoint
 from time import time
 t = time()
 tb = TensorBoard(log_dir='../../logs/flappybird/{}'.format(t))
-
-
 filepath='../../weights/flappybird/best_{}.hdf5'.format(t)
-cp = ModelIntervalCheckpoint(filepath, verbose=1, period=5000)
+cp = ModelIntervalCheckpoint(filepath, verbose=1, interval=5000)
 dqn.fit(env, nb_steps=30000, visualize=False, verbose=2, callbacks = [tb, cp])
 
 p.display_screen = True
