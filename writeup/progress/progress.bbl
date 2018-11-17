@@ -49,11 +49,6 @@ Volodymyr Mnih, Koray Kavukcuoglu, David Silver, Alex Graves, Ioannis
 Matthias Plappert.
 \newblock keras-rl, 2016.
 
-\bibitem{rl}
-Richard~S. Sutton and Andrew~G. Barto.
-\newblock {\em Reinforcement Learning: An Introduction}.
-\newblock MIT Press, 2015.
-
 \bibitem{ple}
 Norman Tasfi.
 \newblock Pygame learning environment.

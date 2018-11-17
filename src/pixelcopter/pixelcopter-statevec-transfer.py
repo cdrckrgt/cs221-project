@@ -1,15 +1,14 @@
+
 import random
 import numpy as np
-
-np.random.seed(4)
-random.seed(4)
-
 import tensorflow as tf
+
+random.seed(4)
 tf.set_random_seed(4)
 
 # importing and creating the FlappyBird game
-from ple.games.flappybird import FlappyBird
-game = FlappyBird()
+from ple.games.pixelcopter import Pixelcopter
+game = Pixelcopter(width = 192, height = 192)
 
 # to get nonvisual representations of the game, we need a state preprocessor
 def state_preprocessor(d):
@@ -20,7 +19,7 @@ def state_preprocessor(d):
 
 # custom reward values for the game
 reward_values = {
-    "tick" : .1, # 0.1 reward for existing, incentive living longer
+    "tick" : 0.1, # 0.1 reward for existing, incentive living longer
     "positive" : 1.0, # 1.0 reward for passing pipe, incentivize passing them
     "negative" : -1.0,
     "loss" : -10.0, # -10.0 for dying, don't die!
@@ -105,12 +104,30 @@ model.add(Dense(nb_actions))
 model.add(Activation('linear'))
 print(model.summary())
 
-from rl.policy import EpsGreedyQPolicy, BoltzmannQPolicy
+flappy_model = Sequential()
+flappy_model.add(Flatten(input_shape=(1,) + (8,)))
+flappy_model.add(Dense(256))
+flappy_model.add(Activation('relu'))
+flappy_model.add(Dense(128))
+flappy_model.add(Activation('relu'))
+flappy_model.add(Dense(16))
+flappy_model.add(Activation('relu'))
+flappy_model.add(Dense(2))
+flappy_model.add(Activation('linear'))
+print(flappy_model.summary())
 
+flappy_model.load_weights('../../weights/flappybird/best_1542412078.897485.hdf5') # loading best weights for flappybird
+weights = []
+for layer in flappy_model.layers[3:-2:2]: # all but last layer to be untrainable, take dense layers
+    weights.append(layer.get_weights())
+for layer in model.layers[3:-2:2]:
+    weight = weights.pop(0)
+    layer.set_weights(weight)
+    layer.trainable = False
+    
 processor = None
-memory = SequentialMemory(limit=25000, window_length=1)
-policy = EpsGreedyQPolicy(0.1)
-dqn = DQNAgent(model=model,policy=policy, nb_actions=nb_actions, memory=memory, processor=processor, nb_steps_warmup=100, gamma=.99, target_model_update=1e-2)
+memory = SequentialMemory(limit=50000, window_length=1)
+dqn = DQNAgent(model=model, nb_actions=nb_actions, memory=memory, processor=processor, nb_steps_warmup=100, gamma=.99, target_model_update=1e-2)
 dqn.compile(Adam(lr=1e-3), metrics=['mae'])
 
 p.display_screen = True
@@ -119,12 +136,11 @@ from keras.callbacks import TensorBoard
 from rl.callbacks import ModelIntervalCheckpoint
 from time import time
 t = time()
-tb = TensorBoard(log_dir='../../logs/flappybird/{}'.format(t))
+tb = TensorBoard(log_dir='../../logs/pixelcopter/{}'.format(t))
 
-
-filepath='../../weights/flappybird/best_{}.hdf5'.format(t)
+filepath='../../weights/pixelcopter/best.{}.hdf5'.format(t)
 cp = ModelIntervalCheckpoint(filepath, verbose=1, interval=5000)
-dqn.fit(env, nb_steps=30000, visualize=False, verbose=1, callbacks = [tb, cp])
+dqn.fit(env, nb_steps=30000, visualize=True, verbose=1, callbacks = [tb, cp])
 
 p.display_screen = True
 
