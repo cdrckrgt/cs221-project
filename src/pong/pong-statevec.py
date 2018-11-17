@@ -18,11 +18,11 @@ def state_preprocessor(d):
 
 # custom reward values for the game
 reward_values = {
-    "tick" : 0.001, # 0.1 reward for existing, incentive living longer
-    "positive" : 1.0, # 1.0 reward for passing pipe, incentivize passing them
-    "negative" : -1.0,
-    "loss" : -10.0, # -10.0 for dying, don't die!
-    "win" : 10.0
+    "tick" : 0.0001, # 0.1 reward for existing, incentive living longer
+    "positive" : 1, # 1.0 reward for passing pipe, incentivize passing them
+    "negative" : -.1,
+    "loss" : -1.0, # -10.0 for dying, don't die!
+    "win" : 10
 }
 
 # putting the game in the PLE wrapper
@@ -102,12 +102,84 @@ model.add(Activation('relu'))
 model.add(Dense(nb_actions))
 model.add(Activation('linear'))
 print(model.summary())
+# from rl.policy import EpsGreedyQPolicy,BoltzmannQPolicy
 
-from rl.policy import EpsGreedyQPolicy,BoltzmannQPolicy
+
+from rl.util import *
+
+class Policy(object):
+    """Abstract base class for all implemented policies.
+    Each policy helps with selection of action to take on an environment.
+    Do not use this abstract base class directly but instead use one of the concrete policies implemented.
+    To implement your own policy, you have to implement the following methods:
+    - `select_action`
+    # Arguments
+        agent (rl.core.Agent): Agent used
+    """
+    def _set_agent(self, agent):
+        self.agent = agent
+
+    @property
+    def metrics_names(self):
+        return []
+
+    @property
+    def metrics(self):
+        return []
+
+    def select_action(self, **kwargs):
+        raise NotImplementedError()
+
+    def get_config(self):
+        """Return configuration of the policy
+        # Returns
+            Configuration as dict
+        """
+        return {}
+
+
+class EpsGreedyQPolicy(Policy):
+    """Implement the epsilon greedy policy
+    Eps Greedy policy either:
+    - takes a random action with probability epsilon
+    - takes current best action with prob (1 - epsilon)
+    """
+    def __init__(self, eps=1, decay = .999, mineps = .001):
+        super(EpsGreedyQPolicy, self).__init__()
+        self.eps = eps
+        self.decay = decay
+        self.mineps = mineps
+
+    def select_action(self, q_values):
+        """Return the selected action
+        # Arguments
+            q_values (np.ndarray): List of the estimations of Q for each action
+        # Returns
+            Selection action
+        """
+        assert q_values.ndim == 1
+        nb_actions = q_values.shape[0]
+
+        if np.random.uniform() < self.eps:
+            action = np.random.random_integers(0, nb_actions-1)
+        else:
+            action = np.argmax(q_values)
+        if self.eps > self.mineps:
+            self.eps *= self.decay
+        return action
+
+    def get_config(self):
+        """Return configurations of EpsGreedyQPolicy
+        # Returns
+            Dict of config
+        """
+        config = super(EpsGreedyQPolicy, self).get_config()
+        config['eps'] = self.eps
+        return config
 
 processor = None
 memory = SequentialMemory(limit=50000, window_length=1)
-dqn = DQNAgent(model=model,policy = None, nb_actions=nb_actions, memory=memory, processor=processor, nb_steps_warmup=10, gamma=.99, target_model_update=1e-2)
+dqn = DQNAgent(model=model,policy = EpsGreedyQPolicy(decay = .999), nb_actions=nb_actions, memory=memory, processor=processor, nb_steps_warmup=50, gamma=.99, target_model_update=1e-2)
 dqn.compile(Adam(lr=1e-4), metrics=['mae'])
 
 p.display_screen = True
