@@ -105,7 +105,7 @@ print(model.summary())
 
 processor = None
 memory = SequentialMemory(limit=50000, window_length=1)
-dqn = DQNAgent(model=model, nb_actions=nb_actions, memory=memory, processor=processor, nb_steps_warmup=10, gamma=.99, target_model_update=1e-2)
+dqn = DQNAgent(model=model, nb_actions=nb_actions, memory=memory, processor=processor, nb_steps_warmup=100, gamma=.99, target_model_update=1e-2)
 dqn.compile(Adam(lr=1e-3), metrics=['mae'])
 
 p.display_screen = True
@@ -117,8 +117,8 @@ t = time()
 tb = TensorBoard(log_dir='../../logs/catcher/{}'.format(t))
 
 filepath='../../weights/catcher/best.{}.hdf5'.format(t)
-cp = ModelCheckpoint(filepath, verbose=1, period=5000)
-dqn.fit(env, nb_steps=50000, visualize=False, verbose=2, callbacks = [tb, cp])
+#cp = ModelCheckpoint(filepath, verbose=1, period=5000)
+dqn.fit(env, nb_steps=50000, visualize=False, verbose=2, callbacks = [tb])
 
 p.display_screen = True
 

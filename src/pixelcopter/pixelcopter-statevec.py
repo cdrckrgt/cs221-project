@@ -18,7 +18,7 @@ def state_preprocessor(d):
 
 # custom reward values for the game
 reward_values = {
-    "tick" : 0.1, # 0.1 reward for existing, incentive living longer
+    "tick" : .1, # 0.1 reward for existing, incentive living longer
     "positive" : 1.0, # 1.0 reward for passing pipe, incentivize passing them
     "negative" : -1.0,
     "loss" : -10.0, # -10.0 for dying, don't die!
@@ -27,7 +27,7 @@ reward_values = {
 
 # putting the game in the PLE wrapper
 from ple import PLE
-p = PLE(game, fps=30, display_screen=True, force_fps=False, state_preprocessor=state_preprocessor, reward_values=reward_values)
+p = PLE(game, fps=30, display_screen=True, force_fps=True, state_preprocessor=state_preprocessor, reward_values=reward_values)
 p.init()
 
 # PLE wrapper doesn't follow same interface as keras-rl expects, so we
@@ -103,22 +103,26 @@ model.add(Dense(nb_actions))
 model.add(Activation('linear'))
 print(model.summary())
 
+from rl.policy import EpsGreedyQPolicy, BoltzmannQPolicy
+
 processor = None
-memory = SequentialMemory(limit=50000, window_length=1)
-dqn = DQNAgent(model=model, nb_actions=nb_actions, memory=memory, processor=processor, nb_steps_warmup=10, gamma=.99, target_model_update=1e-2)
+memory = SequentialMemory(limit=25000, window_length=1)
+#policy = EpsGreedyQPolicy(0.1)
+dqn = DQNAgent(model=model, policy = None, nb_actions=nb_actions, memory=memory, processor=processor, nb_steps_warmup=100, gamma=.95, target_model_update=1e-2)
 dqn.compile(Adam(lr=1e-3), metrics=['mae'])
 
 p.display_screen = True
 
 from keras.callbacks import TensorBoard
-from keras.callbacks import ModelCheckpoint
+from rl.callbacks import ModelIntervalCheckpoint
 from time import time
 t = time()
 tb = TensorBoard(log_dir='../../logs/pixelcopter/{}'.format(t))
 
-filepath='../../weights/pixelcopter/best.{}.hdf5'.format(t)
-cp = ModelCheckpoint(filepath, verbose=1, period=5000)
-dqn.fit(env, nb_steps=50000, visualize=False, verbose=2, callbacks = [tb, cp])
+
+#filepath='../../weights/pixelcopter/best_{}.hdf5'.format(t)
+#cp = ModelIntervalCheckpoint(filepath, verbose=1, interval=5000)
+dqn.fit(env, nb_steps=30000, visualize=False, verbose=2, callbacks = [tb])
 
 p.display_screen = True
 
