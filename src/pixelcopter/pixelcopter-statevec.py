@@ -178,10 +178,12 @@ class EpsGreedyQPolicy(Policy):
         return config
 
 processor = None
-memory = SequentialMemory(limit=10000, window_length=1)
-policy = EpsGreedyQPolicy()
+memory = SequentialMemory(limit=100000, window_length=1)
+from rl.policy import LinearAnnealedPolicy, EpsGreedyQPolicy
+policy = LinearAnnealedPolicy(EpsGreedyQPolicy(), attr='eps', value_max=.2, value_min = .05, value_test = .02,
+                            nb_steps = 75000)
 # policy = None
-dqn = DQNAgent(model=model, nb_actions=nb_actions, memory=memory, processor=processor, nb_steps_warmup=50, gamma=.95, target_model_update=.1)
+dqn = DQNAgent(model=model, nb_actions=nb_actions, policy = policy, memory=memory, processor=processor, nb_steps_warmup=100, gamma=.99, target_model_update=1e-2)
 dqn.compile(Adam(lr=1e-3), metrics=['mae'])
 
 p.display_screen = True
@@ -193,7 +195,7 @@ t = time()
 tb = TensorBoard(log_dir='../../logs/pixelcopter/{}'.format(t))
 # filepath='../../weights/pixelcopter/best_{}.hdf5'.format(t)
 # cp = ModelIntervalCheckpoint(filepath, verbose=1, interval=5000)
-dqn.fit(env, nb_steps=10000, visualize=False, verbose=2, callbacks = [tb])
+dqn.fit(env, nb_steps=150000, visualize=False, verbose=2, callbacks = [tb])
 
 p.display_screen = True
 
