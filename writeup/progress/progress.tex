@@ -110,7 +110,7 @@ The DQN model uses a neural network to approximate the Q action-value function, 
 
 Furthermore, we will demonstrate the ability for policies learned through deep reinforcement learning on  other games to transfer to FlappyBird.
 This has been demonstrated before, particularly through the use of convolutional neural networks for playing games directly from pixels. \cite{deepmind}
-In our case specifically, we will develop a Q-network parameterized by weights $\theta_{FlappyBird}$ that performs 'well enough' on FlappyBird, along with Q-networks parameterized by $\theta_{PixelCopter}$ that perform 'well enough' on the game PixelCopter.
+In our case specifically, we will develop a Q-network parameterized by weights $\theta_{FlappyBird}$ that performs `well enough' on FlappyBird, along with Q-networks parameterized by $\theta_{PixelCopter}$ that perform `well enough' on the game PixelCopter.
 These networks will be initialized through Xavier initialization. \cite{xavier}
 Once we have this, we will begin training new Q-networks parameterized by $\theta'_{PixelCopter}$ that were initialized with $\theta_{FlappyBird}$.
 We do this by fixing weights up until the final hidden layer, and solely training those weights.
@@ -153,7 +153,7 @@ So far we have described steps to arriving at the Q-learning algorithm described
 The DQN algorithm presented by DeepMind makes numerous improvement on this algorithm by introducing a non-linear function approximator and experience replay.
 
 \subsection{The Q-network}
-Since the vanilla Q-learning algorithm does not generalize well to state spaces as large as those encountered in Atari games, we use a neural network to approximate the Q-value function. 
+Since the vanilla Q-learning algorithm does not generalize well to state spaces as large as those encountered in video games, we use a neural network to approximate the Q-value function. 
 Then we have a neural network parametrized by weights $\theta$ such that $Q(s, a; \theta) \approx Q^{*}(s, a)$.
 At every iteration of training $i$, we minimize the squared error between the current Q-function and the optimal Q-function, according to the loss function:
 \begin{equation}
@@ -212,7 +212,7 @@ With this identical model, we may compute the same targets, albeit with less var
 
 \subsection{Annealed $\epsilon$-greedy Policy}
 Rather than use the standard $\epsilon$-greedy policy, we opted to use a policy that annealed $\epsilon$ from some value $\alpha$ to some value $\beta$ over training.
-Our goal was to incentivize exploration early on, but revert back to the usualy $\epsilon$-greedy policy after some about of training.
+Our goal was to incentivize exploration early on, but revert back to the usually $\epsilon$-greedy policy after some about of training.
 
 
 \subsection{Model Architecture}
@@ -299,15 +299,21 @@ The DQN performs well above the ability of the average human when it does learn 
 
 \begin{figure}[h!]
 \includegraphics[width=\textwidth]{pixelcopter-training}
-\caption{5 different runs for DQN on PixelCopter. The x-axis shows episode number, while the y-axis shows episode reward.}
+\caption{5 different runs for DQN on PixelCopter. The x-axis shows episode number, while the y-axis shows episode length.}
 \label{fig:other-training}
 \end{figure}
 We show the performance of the DQN trained on the PixelCopter training in \ref{fig:other-training}.
+For both games, we show the episode length as a proxy for how good the agent performs on the episode.
 The performance of DQN on PixelCopter without transfer learning plateaus very early on, and has a very poor performanc eoverall.
 
 \subsection{Transfer Learning}
-We show in \ref{fig:transfer-test} the effectiveness of using pre-trained weights from FlappyBird on the game PixelCopter.
+We show in \ref{fig:transfer-training} the effectiveness of using pre-trained weights from FlappyBird on the game PixelCopter.
 
+\begin{figure}[h!]
+\includegraphics[width=\textwidth]{pixelcopter-transfer}
+\label{fig:transfer-training}
+\caption{6 different runs for the DQN on PixelCopter, using weights pretrained on FlappyBird.}
+\end{figure}
 
 
 \subsection{Analysis}
@@ -329,15 +335,6 @@ Because the performance of DQN on PixelCopter was poor to begin with, we hoped t
 After running tests with transfer learning, we see similar performance to the non-transfer-learned DQN model on PixelCopter, leading us to believe that the transfer learning was ineffectual.
 We don't know the effectiveness of transfer learning on solely fully-connected layers, and hopefully this goes to show us that we might want to continue with CNNs and learning from pixel input in the future.
 
-\begin{figure}[h!]
-\includegraphics[width=0.5\textwidth]{test-tensorboard}
-\label{fig:transfer-training}
-\end{figure}
-
-\begin{figure}[h!]
-\includegraphics[width=0.5\textwidth]{test-tensorboard}
-\label{fig:transfer-test}
-\end{figure}
 
 \bibliography{ref}
 \bibliographystyle{plain}
