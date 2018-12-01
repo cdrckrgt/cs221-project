@@ -18,9 +18,9 @@ def state_preprocessor(d):
 
 # custom reward values for the game
 reward_values = {
-    "tick" : 0.0001, # 0.1 reward for existing, incentive living longer
+    "tick" : 0, # 0.1 reward for existing, incentive living longer
     "positive" : 1, # 1.0 reward for passing pipe, incentivize passing them
-    "negative" : -.1,
+    "negative" : -1,
     "loss" : -1.0, # -10.0 for dying, don't die!
     "win" : 10
 }
@@ -144,7 +144,7 @@ class EpsGreedyQPolicy(Policy):
     - takes a random action with probability epsilon
     - takes current best action with prob (1 - epsilon)
     """
-    def __init__(self, eps=1, decay = .999, mineps = .001):
+    def __init__(self, eps=1, decay = .9999, mineps = .01):
         super(EpsGreedyQPolicy, self).__init__()
         self.eps = eps
         self.decay = decay
@@ -178,8 +178,8 @@ class EpsGreedyQPolicy(Policy):
         return config
 
 processor = None
-memory = SequentialMemory(limit=50000, window_length=1)
-dqn = DQNAgent(model=model,policy = EpsGreedyQPolicy(decay = .999), nb_actions=nb_actions, memory=memory, processor=processor, nb_steps_warmup=50, gamma=.99, target_model_update=1e-2)
+memory = SequentialMemory(limit=100000, window_length=1)
+dqn = DQNAgent(model=model,policy = EpsGreedyQPolicy(), nb_actions=nb_actions, memory=memory, processor=processor, nb_steps_warmup=50, gamma=.99, target_model_update=1e-2)
 dqn.compile(Adam(lr=1e-4), metrics=['mae'])
 
 p.display_screen = True
@@ -192,7 +192,7 @@ tb = TensorBoard(log_dir='../../logs/pong/{}'.format(t))
 
 filepath='../../weights/pong/best.{}.hdf5'.format(t)
 cp = ModelCheckpoint(filepath, verbose=1, period=5000)
-dqn.fit(env, nb_steps=50000, visualize=False, verbose=2, callbacks = [tb, cp])
+dqn.fit(env, nb_steps=100000, visualize=False, verbose=2, callbacks = [tb, cp])
 
 p.display_screen = True
 

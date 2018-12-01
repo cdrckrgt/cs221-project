@@ -198,7 +198,8 @@ t = time()
 tb = TensorBoard(log_dir='../../logs/flappybird/{}'.format(t))
 filepath='../../weights/flappybird/best_{}.hdf5'.format(t)
 cp = ModelIntervalCheckpoint(filepath, verbose=1, interval=5000)
-dqn.fit(env, nb_steps=75000, visualize=False, verbose=2, callbacks = [tb, cp])
+
+dqn.fit(env, nb_steps=50000, visualize=False, verbose=1, callbacks = [tb, cp])
 
 p.display_screen = True
 
