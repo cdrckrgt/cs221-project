@@ -27,14 +27,14 @@ class CustomSpace(object):
     A space object that defines the actions that we can take during each step.
     '''
     def __init__(self, actions):
-        self.actions = actions        
+        self.actions = actions
 
     def sample(self):
         return random.choice(self.actions)
 
     def contains(self, x):
         return x in self.actions
-    
+
 class CustomEnv(Env):
     '''
     A custom wrapper for the Env class, allowing us to use keras-rl with games
@@ -56,7 +56,7 @@ class CustomEnv(Env):
     def reset(self):
         self.p.reset_game()
         return self.p.getScreenRGB()
-    
+
     def __del__(self):
         pass
 
@@ -118,7 +118,7 @@ model.add(Activation('linear'))
 print(model.summary())
 
 processor = FlappyBirdProcessor()
-memory = SequentialMemory(limit=1000000, window_length=WINDOW_LENGTH)
+memory = SequentialMemory(limit=30000, window_length=WINDOW_LENGTH)
 dqn = DQNAgent(model=model, nb_actions=nb_actions, memory=memory, processor=processor, nb_steps_warmup=50000, gamma=.99, target_model_update=10000, train_interval=4, delta_clip=1.)
 dqn.compile(Adam(lr=1e-3), metrics=['mae'])
 p.display_screen = True
