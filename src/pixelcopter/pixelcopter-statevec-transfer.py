@@ -124,11 +124,14 @@ for layer in model.layers[3:-2:2]:
     weight = weights.pop(0)
     layer.set_weights(weight)
     layer.trainable = False
-    
+
 processor = None
-memory = SequentialMemory(limit=50000, window_length=1)
-dqn = DQNAgent(model=model, nb_actions=nb_actions, memory=memory, processor=processor, nb_steps_warmup=100, gamma=.95, target_model_update=1e-1)
-dqn.compile(Adam(lr=1e-3), metrics=['mae'])
+memory = SequentialMemory(limit=150000, window_length=1)
+from rl.policy import LinearAnnealedPolicy, EpsGreedyQPolicy
+policy = LinearAnnealedPolicy(EpsGreedyQPolicy(), attr='eps', value_max=.2, value_min = .05, value_test = .01,
+                            nb_steps = 150000)
+dqn = DQNAgent(model=model,policy = policy, nb_actions=nb_actions, memory=memory, processor=processor, nb_steps_warmup=100, gamma=.99, target_model_update=1e-2)
+dqn.compile(Adam(lr=5e-4), metrics=['mae'])
 
 p.display_screen = True
 
