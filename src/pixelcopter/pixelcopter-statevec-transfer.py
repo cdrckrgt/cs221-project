@@ -105,7 +105,7 @@ model.add(Activation('linear'))
 print(model.summary())
 
 flappy_model = Sequential()
-flappy_model.add(Flatten(input_shape=(1,) + (8,))) # change this to be observation space size
+flappy_model.add(Flatten(input_shape=(1,) + (11,))) # change this to be observation space size
 flappy_model.add(Dense(256))
 flappy_model.add(Activation('relu'))
 flappy_model.add(Dense(128))
@@ -141,10 +141,10 @@ from time import time
 t = time()
 tb = TensorBoard(log_dir='../../logs/pixelcopter/{}'.format(t))
 
-filepath='../../weights/pixelcopter/transfer-best.{}.hdf5'.format(t)
-cp = ModelIntervalCheckpoint(filepath, verbose=1, interval=5000)
-dqn.fit(env, nb_steps=300000, visualize=True, verbose=2, callbacks = [tb, cp])
+# filepath='../../weights/pixelcopter/transfer-best.{}.hdf5'.format(t)
+# cp = ModelIntervalCheckpoint(filepath, verbose=1, interval=5000)
+dqn.fit(env, nb_steps=300000, visualize=True, verbose=2, callbacks = [tb])
 
 p.display_screen = True
 
-dqn.test(env, nb_episodes=10, visualize=True)
+dqn.test(env, nb_episodes=50, visualize=True)
