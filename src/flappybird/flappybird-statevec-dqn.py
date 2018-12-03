@@ -178,7 +178,7 @@ from rl.util import *
 #         return config
 
 
-from rl.policy import MaxBoltzmannQPolicy, LinearAnnealedPolicy, EpsGreedyQPolicy
+from rl.policy import LinearAnnealedPolicy, EpsGreedyQPolicy
 
 processor = None
 memory = SequentialMemory(limit=75000, window_length=1)

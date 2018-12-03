@@ -106,13 +106,13 @@ model.add(Activation('linear'))
 print(model.summary())
 
 model.load_weights('../../weights/flappybird/best_1543641544.49665.hdf5') # loading best weights for flappybird
-# weights = []
-# for layer in flappy_model.layers[3:-2:2]: # all but last layer to be untrainable, take dense layers
-#     weights.append(layer.get_weights())
-# for layer in model.layers[3:-2:2]:
-#     weight = weights.pop(0)
-#     layer.set_weights(weight)
-#     layer.trainable = False
+weights = []
+for layer in model.layers[3:-2:2]: # all but last layer to be untrainable, take dense layers
+    weights.append(layer.get_weights())
+for layer in model.layers[3:-2:2]:
+    weight = weights.pop(0)
+    layer.set_weights(weight)
+    layer.trainable = False
 
 from rl.policy import LinearAnnealedPolicy, EpsGreedyQPolicy
 
@@ -135,7 +135,7 @@ tb = TensorBoard(log_dir='../../logs/flappybird/{}'.format(t))
 filepath='../../weights/flappybird/best_{}.hdf5'.format(t)
 cp = ModelIntervalCheckpoint(filepath, verbose=1, interval=5000)
 
-dqn.fit(env, nb_steps=50000, visualize=False, verbose=1, callbacks = [tb, cp])
+# dqn.fit(env, nb_steps=50000, visualize=False, verbose=1, callbacks = [tb, cp])
 
 p.display_screen = True
 
