@@ -110,7 +110,6 @@ memory = SequentialMemory(limit=150000, window_length=1)
 from rl.policy import LinearAnnealedPolicy, EpsGreedyQPolicy
 policy = LinearAnnealedPolicy(EpsGreedyQPolicy(), attr='eps', value_max=.2, value_min = .05, value_test = .01,
                             nb_steps = 150000)
-# policy = None
 dqn = DQNAgent(model=model, nb_actions=nb_actions, policy = policy, memory=memory, processor=processor, nb_steps_warmup=100, gamma=.99, target_model_update=1e-2)
 dqn.compile(Adam(lr=4e-4), metrics=['mae'])
 

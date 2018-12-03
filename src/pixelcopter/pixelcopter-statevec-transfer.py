@@ -130,8 +130,8 @@ memory = SequentialMemory(limit=150000, window_length=1)
 from rl.policy import LinearAnnealedPolicy, EpsGreedyQPolicy
 policy = LinearAnnealedPolicy(EpsGreedyQPolicy(), attr='eps', value_max=.2, value_min = .05, value_test = .01,
                             nb_steps = 150000)
-dqn = DQNAgent(model=model,policy = policy, nb_actions=nb_actions, memory=memory, processor=processor, nb_steps_warmup=100, gamma=.99, target_model_update=1e-2)
-dqn.compile(Adam(lr=5e-4), metrics=['mae'])
+dqn = DQNAgent(model=model, nb_actions=nb_actions, policy = policy, memory=memory, processor=processor, nb_steps_warmup=100, gamma=.99, target_model_update=1e-2)
+dqn.compile(Adam(lr=4e-4), metrics=['mae'])
 
 p.display_screen = True
 
@@ -143,7 +143,7 @@ tb = TensorBoard(log_dir='../../logs/pixelcopter/{}'.format(t))
 
 filepath='../../weights/pixelcopter/transfer-best.{}.hdf5'.format(t)
 cp = ModelIntervalCheckpoint(filepath, verbose=1, interval=5000)
-dqn.fit(env, nb_steps=30000, visualize=True, verbose=2, callbacks = [tb, cp])
+dqn.fit(env, nb_steps=300000, visualize=True, verbose=2, callbacks = [tb, cp])
 
 p.display_screen = True
 
