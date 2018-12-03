@@ -105,14 +105,14 @@ model.add(Activation('linear'))
 print(model.summary())
 
 flappy_model = Sequential()
-flappy_model.add(Flatten(input_shape=(1,) + (8,)))
+flappy_model.add(Flatten(input_shape=(1,) + (8,))) # change this to be observation space size
 flappy_model.add(Dense(256))
 flappy_model.add(Activation('relu'))
 flappy_model.add(Dense(128))
 flappy_model.add(Activation('relu'))
 flappy_model.add(Dense(16))
 flappy_model.add(Activation('relu'))
-flappy_model.add(Dense(2))
+flappy_model.add(Dense(2)) # change this to be action space size
 flappy_model.add(Activation('linear'))
 print(flappy_model.summary())
 
