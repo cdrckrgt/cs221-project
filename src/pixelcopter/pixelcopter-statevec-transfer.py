@@ -143,7 +143,7 @@ tb = TensorBoard(log_dir='../../logs/pixelcopter/{}'.format(t))
 
 filepath='../../weights/pixelcopter/transfer-best.{}.hdf5'.format(t)
 cp = ModelIntervalCheckpoint(filepath, verbose=1, interval=5000)
-dqn.fit(env, nb_steps=30000, visualize=True, verbose=1, callbacks = [tb, cp])
+dqn.fit(env, nb_steps=30000, visualize=True, verbose=2, callbacks = [tb, cp])
 
 p.display_screen = True
 

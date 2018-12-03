@@ -112,7 +112,7 @@ policy = LinearAnnealedPolicy(EpsGreedyQPolicy(), attr='eps', value_max=.2, valu
                             nb_steps = 150000)
 # policy = None
 dqn = DQNAgent(model=model, nb_actions=nb_actions, policy = policy, memory=memory, processor=processor, nb_steps_warmup=100, gamma=.99, target_model_update=1e-2)
-dqn.compile(Adam(lr=5e-4), metrics=['mae'])
+dqn.compile(Adam(lr=4e-4), metrics=['mae'])
 
 p.display_screen = True
 
@@ -127,4 +127,4 @@ dqn.fit(env, nb_steps=300000, visualize=False, verbose=2, callbacks = [tb])
 
 p.display_screen = True
 
-dqn.test(env, nb_episodes=15, visualize=True)
+dqn.test(env, nb_episodes=50, visualize=True)
