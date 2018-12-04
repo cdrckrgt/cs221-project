@@ -1,10 +1,6 @@
-
 import random
 import numpy as np
 import tensorflow as tf
-
-random.seed(4)
-tf.set_random_seed(4)
 
 # importing and creating the FlappyBird game
 from ple.games.pixelcopter import Pixelcopter
@@ -105,7 +101,7 @@ model.add(Activation('linear'))
 print(model.summary())
 
 flappy_model = Sequential()
-flappy_model.add(Flatten(input_shape=(1,) + (8,))) # change this to be observation space size
+flappy_model.add(Flatten(input_shape=(1,) + (11,))) # change this to be observation space size
 flappy_model.add(Dense(256))
 flappy_model.add(Activation('relu'))
 flappy_model.add(Dense(128))
@@ -116,14 +112,14 @@ flappy_model.add(Dense(2)) # change this to be action space size
 flappy_model.add(Activation('linear'))
 print(flappy_model.summary())
 
-flappy_model.load_weights('../../weights/flappybird/best_1542412078.897485.hdf5') # loading best weights for flappybird
+flappy_model.load_weights('../../weights/flappybird/best.hdf5') # loading best weights for flappybird
 weights = []
-for layer in flappy_model.layers[3:-2:2]: # all but last layer to be untrainable, take dense layers
+for layer in flappy_model.layers[1:-1:2]: # all but last layer to be untrainable, take dense layers
     weights.append(layer.get_weights())
-for layer in model.layers[3:-2:2]:
+for layer in model.layers[1:-1:2]:
     weight = weights.pop(0)
     layer.set_weights(weight)
-    layer.trainable = False
+    layer.trainable = True
 
 processor = None
 memory = SequentialMemory(limit=150000, window_length=1)
@@ -131,7 +127,7 @@ from rl.policy import LinearAnnealedPolicy, EpsGreedyQPolicy
 policy = LinearAnnealedPolicy(EpsGreedyQPolicy(), attr='eps', value_max=.2, value_min = .05, value_test = .01,
                             nb_steps = 150000)
 dqn = DQNAgent(model=model, nb_actions=nb_actions, policy = policy, memory=memory, processor=processor, nb_steps_warmup=100, gamma=.99, target_model_update=1e-2)
-dqn.compile(Adam(lr=4e-4), metrics=['mae'])
+dqn.compile(Adam(lr=4e-3), metrics=['mae'])
 
 p.display_screen = True
 
@@ -143,7 +139,7 @@ tb = TensorBoard(log_dir='../../logs/pixelcopter/{}'.format(t))
 
 filepath='../../weights/pixelcopter/transfer-best.{}.hdf5'.format(t)
 cp = ModelIntervalCheckpoint(filepath, verbose=1, interval=5000)
-dqn.fit(env, nb_steps=300000, visualize=True, verbose=2, callbacks = [tb, cp])
+dqn.fit(env, nb_steps=300000, visualize=True, verbose=1, callbacks = [tb, cp])
 
 p.display_screen = True
 
