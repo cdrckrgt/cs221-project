@@ -105,14 +105,7 @@ model.add(Dense(nb_actions))
 model.add(Activation('linear'))
 print(model.summary())
 
-model.load_weights('../../weights/flappybird/best_1543641544.49665.hdf5') # loading best weights for flappybird
-weights = []
-for layer in model.layers[3:-2:2]: # all but last layer to be untrainable, take dense layers
-    weights.append(layer.get_weights())
-for layer in model.layers[3:-2:2]:
-    weight = weights.pop(0)
-    layer.set_weights(weight)
-    layer.trainable = False
+model.load_weights('../../weights/flappybird/best.hdf5') # loading best weights for flappybird
 
 from rl.policy import LinearAnnealedPolicy, EpsGreedyQPolicy
 

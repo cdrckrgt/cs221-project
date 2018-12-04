@@ -94,32 +94,13 @@ model.add(Dense(256))
 model.add(Activation('relu'))
 model.add(Dense(128))
 model.add(Activation('relu'))
-model.add(Dense(16))
+model.add(Dense(16, trainable=False))
 model.add(Activation('relu'))
 model.add(Dense(nb_actions))
 model.add(Activation('linear'))
 print(model.summary())
 
-flappy_model = Sequential()
-flappy_model.add(Flatten(input_shape=(1,) + (11,))) # change this to be observation space size
-flappy_model.add(Dense(256))
-flappy_model.add(Activation('relu'))
-flappy_model.add(Dense(128))
-flappy_model.add(Activation('relu'))
-flappy_model.add(Dense(16))
-flappy_model.add(Activation('relu'))
-flappy_model.add(Dense(2)) # change this to be action space size
-flappy_model.add(Activation('linear'))
-print(flappy_model.summary())
-
-flappy_model.load_weights('../../weights/flappybird/best.hdf5') # loading best weights for flappybird
-weights = []
-for layer in flappy_model.layers[1:-1:2]: # all but last layer to be untrainable, take dense layers
-    weights.append(layer.get_weights())
-for layer in model.layers[1:-1:2]:
-    weight = weights.pop(0)
-    layer.set_weights(weight)
-    layer.trainable = True
+model.load_weights('../../weights/flappybird/best.hdf5') # loading best weights for flappybird
 
 processor = None
 memory = SequentialMemory(limit=150000, window_length=1)
@@ -137,10 +118,10 @@ from time import time
 t = time()
 tb = TensorBoard(log_dir='../../logs/pixelcopter/{}'.format(t))
 
-filepath='../../weights/pixelcopter/transfer-best.{}.hdf5'.format(t)
-cp = ModelIntervalCheckpoint(filepath, verbose=1, interval=5000)
-dqn.fit(env, nb_steps=300000, visualize=True, verbose=1, callbacks = [tb, cp])
+# filepath='../../weights/pixelcopter/transfer-best.{}.hdf5'.format(t)
+# cp = ModelIntervalCheckpoint(filepath, verbose=1, interval=5000)
+dqn.fit(env, nb_steps=300000, visualize=True, verbose=1, callbacks = [tb])
 
 p.display_screen = True
 
-dqn.test(env, nb_episodes=10, visualize=True)
+dqn.test(env, nb_episodes=50, visualize=True)
