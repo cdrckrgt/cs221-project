@@ -1,10 +1,6 @@
-
 import random
 import numpy as np
 import tensorflow as tf
-
-# random.seed(4)
-# tf.set_random_seed(4)
 
 # importing and creating the FlappyBird game
 from ple.games.pixelcopter import Pixelcopter
@@ -112,7 +108,7 @@ from rl.policy import LinearAnnealedPolicy, EpsGreedyQPolicy
 policy = LinearAnnealedPolicy(EpsGreedyQPolicy(), attr='eps', value_max=.2, value_min = .05, value_test = .01,
                             nb_steps = 150000)
 dqn = DQNAgent(model=model, nb_actions=nb_actions, policy = policy, memory=memory, processor=processor, nb_steps_warmup=100, gamma=.99, target_model_update=1e-2)
-dqn.compile(Adam(lr=4e-4), metrics=['mae'])
+dqn.compile(Adam(lr=4e-3), metrics=['mae'])
 
 p.display_screen = True
 
