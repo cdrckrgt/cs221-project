@@ -9,7 +9,7 @@ Contact: `{cedrick, archow, clomeli}@cs.stanford.edu`
 # What's Included
 
 We have a fork of the PyGame-Learning-Environment, where we've inserted our own feature extractor into the PixelCopter game. 
-For the sake of brevity, we include the modified file in the `src/pixelcopter` directory.
+For the sake of brevity, we include the modified file in the `src/pixelcopter/pixelcopter.py`.
 
 Our `src` folder contains several folder for the games that we tried, each with a similar structure.
 Beginning training on a game requires installing the packages listed in the `requirements.txt` file in the home directory, then running `python <which-agent-to-train>.py` in one of the `src` folders.
