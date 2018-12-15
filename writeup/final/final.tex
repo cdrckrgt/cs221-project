@@ -9,10 +9,10 @@
 
 % to compile a preprint version, e.g., for submission to arXiv, add
 % add the [preprint] option:
-\usepackage[preprint]{nips_2018}
+% \usepackage[preprint]{nips_2018}
 
 % to compile a camera-ready version, add the [final] option, e.g.:
-% \usepackage[final]{nips_2018}
+\usepackage[final]{nips_2018}
 
 % to avoid loading the natbib package, add option nonatbib:
 % \usepackage[nonatbib]{nips_2018}
@@ -234,7 +234,7 @@ This came from our intuition that our model would not know a great deal early on
 \subsection{Model Architecture}
 Since we use as input to the Q-network the internal game state representation as opposed to the raw pixel inputs, we don't make use of a convolutional neural network to learn features directly from the game's pixels.
 We instead make use of a multi-layered perceptron that takes as input the game's state in vector form.
-In the case of FlappyBird, the state vector is a vector in $\mathbb{R}^11$, and contains the bird's position, velocity, and the distance, top, and bottom positions of the next two pipes.
+In the case of FlappyBird, the state vector is a vector in $\mathbb{R}^{11}$, and contains the bird's position, velocity, and the distance, top, and bottom positions of the next two pipes.
 We also added three null features to the game's state, since PixelCopter had a feature representation in $\mathbb{R}^{11}$.
 PixelCopter had the same features as FlappyBird, with three additional ones: the distance to the next obstacle and the positions of the top and bottom of the obstacle.
 We have three fully connected hidden layers, with dimensionality 256, 128, and 16. 
@@ -242,109 +242,6 @@ Each layer was followed by a ReLU activation, while the output layer was instead
 This leaves us with 38,066 trainable parameters, a relatively small network compared to those that are used to learn games from pixel input.
 The outputs of the Q-network for each game were the Q-values of all actions in the action space for that game.
 In the case of FlappyBird, the output was two Q-values in $\mathbb{R}$, one for the action to jump, and the null action.
-
-\begin{comment}
-
-\begin{table}[h!]
-\centering
-\begin{tabular}{ll}
-
-\multicolumn{2}{ c }{ \textbf{Hyperparameters for Xavier-initialized networks} } \\
-
-\\
-
-    \begin{tabular}{| c | c |}
-    \hline
-    \multicolumn{2}{| c |}{FlappyBird Hyperparameters} \\ 
-    \hline
-    Target Model Update & 1e-2 \\
-    \hline
-    Learning Rate & 1e-3 \\
-    \hline
-    $\gamma$ & 0.99 \\
-    \hline
-    Annealed $\epsilon$ & 0.2 $\rightarrow$ 0.05 \\
-    \hline
-    Annealing Steps & 30,000 \\
-    \hline
-    Warm-up Steps & 100 \\
-    \hline
-    Memory Size Limit & 50,000 \\
-    \hline
-    Training Steps & 75,000 \\
-    \hline
-    \multicolumn{2}{| c |}{Reward Profile} \\ 
-    \hline
-    tick & $0.1$ \\
-    \hline
-    passed pipe & $1.0$ \\
-    \hline
-    collided & $-10.0$ \\
-    \hline
-    \end{tabular}
-
-&
-
-    \begin{tabular}{| c | c |}
-    \hline
-    \multicolumn{2}{| c |}{PixelCopter Hyperparameters} \\ 
-    \hline
-    Target Model Update & 1e-2 \\
-    \hline
-    Learning Rate & 1e-3 \\
-    \hline
-    $\gamma$ & 0.99 \\
-    \hline
-    Annealed $\epsilon$ & 0.2 $\rightarrow$ 0.05 \\
-    \hline
-    Annealing Steps & 75,000 \\
-    \hline
-    Warm-up Steps & 100 \\
-    \\subsection{Transfer Learning}
-We show in \ref{fig:transfer-training} the effectiveness of using pre-trained weights from FlappyBird on the game PixelCopter. From the six runs we ran, we found that transfer learning on average had no major impact on the average number of steps per episode. However, the average maximum step per test run was higher using our pre-trained weights. (move Figure 3 out of analysis and into here) hline
-    Memory Size Limit & 100,000 \\
-    \hline
-    Training Steps & 150,000 \\
-    \hline
-    \multicolumn{2}{| c |}{Reward Profile} \\ 
-    \hline
-    tick & $0.1$ \\
-    \hline
-    passed pipe & $1.0$ \\
-    \hline
-    collided & $-10.0$ \\
-    \hline
-    \end{tabular}
-\\
-\end{tabular}
-\caption{These hyperparameters were obtained with lots of trial and error. If not noted here, the hyperparameter was left as the default value in Keras.}
-\label{hyperparams-xavier}
-\end{table}
-
-\begin{figure}[h!]
-\includegraphics[width=\textwidth]{flappy-training-eps}
-\caption{6 different runs for DQN on FlappyBird. The x-axis shows episode number, while the y-axis shows episode length.}
-\label{fig:flappy-training-eps}
-\end{figure}
-
-\begin{figure}[h!]
-\includegraphics[width=\textwidth]{pixelcopter-training}
-\caption{5 different runs for DQN on PixelCopter. The x-axis shows episode number, while the y-axis shows episode length.}
-\label{fig:other-training}
-\end{figure}
-We show the performance of the DQN trained on the PixelCopter training in \ref{fig:other-training}.
-For both games, we show the episode length as a proxy for how good the agent performs on the episode.
-The performance of DQN on PixelCopter without transfer learning plateaus very early on, and has a very poor performanc eoverall.
-
-
-
-Flappy bird average number of steps over 15 tests: 14,177.4
-
-
-\subsection{Analysis}
-Our preliminary results showcase that the vanilla DQN model trained on PixelCopter did not generally perform well, even with additional hyperparameter tuning and transfer learning. We decided to increase the number of iterations from 30,000 to 150,000 to see if performance would improve over time. Figure 4 here? Additionally, our preliminary runs involved using transfer learning on solely dense layers. Attempting to combat this issue, we decided to remove x. We ran a total of 40 test runs with 50 episodes per test: 20 of which involved no transfer learning, 10 included transfer learning, and the last 10 included transfer learning with frozen weights.  (y: insert graph and table of averages here). As seen in Figure y, transfer learning with and without frozen weights had no immediate effect on average steps per period.  Additionally, the preliminary results we found indicating a higher average maximum step/reward was not prevalent, as our additional runs seems to combat this finding. 
-
-\end{comment}
 
 \section{Results}
 
@@ -354,7 +251,8 @@ The DQN agent trained on FlappyBird reached superhuman levels of ability.
 The final hyperparameters are described in \ref{hyperparams-xavier}.
 We see in \ref{fig:flappy-training-eps} the variance in episode reward over different random seeds for the FlappyBird game.
 Each run was trained over 75,000 iterations, and we see the ability for the DQN agent to learn to play the game sometimes but fail other times.
-The DQN agent performs well above the ability of the average human when it does learn to play the game, since it averages 14,177 steps before dying (at 24 frames per second, this comes out to over 9 hours without dying!).
+The DQN agent performs well above the ability of the average human when it does learn to play the game, since it averages 14,177 steps before dying.
+At 24 frames per second, this comes out to be 10 minutes without dying!
 
 \begin{figure}[h!]
 \includegraphics[width=\textwidth]{flappy-training-eps}
@@ -408,7 +306,7 @@ The DQN agent performs well above the ability of the average human when it does 
     \hline
     Target Model Update & 1e-2 \\
     \hline
-    Learning Rate & 1e-3 \\
+    Learning Rate & 4e-4 \\
     \hline
     $\gamma$ & 0.99 \\
     \hline
@@ -432,6 +330,7 @@ The DQN agent performs well above the ability of the average human when it does 
     \hline
     \end{tabular}
 
+\\
 \\
 
 \end{tabular}
@@ -448,13 +347,15 @@ The original feature extractor did not contain information about the floor and c
 
 \begin{figure}[h!]
 \includegraphics[width=\textwidth]{pixelcopter-training}
-\caption{5 different runs for vanilla DQN on PixelCopter without optimal feature engineering. The x-axis shows episode number, while the y-axis shows episode length.}
+\caption{3 different runs for vanilla DQN on PixelCopter without optimal feature engineering. The x-axis shows episode number, while the y-axis shows episode length.}
 \label{fig:other-training}
 \end{figure}
 
 We changed the features that were extracted from the game mostly for this reason, but also because we wanted the feature representations of PixelCopter and FlappyBird to be as similar as possible for the transfer learning portion of our experiments.
+As seen in \ref{fig:features}, we changed the features of PixelCopter to include the positions of the next floor and ceiling pair along with the next next floor and ceiling pair.
+This gave the agent the information nexessary to plan its trajectory so that it wouldn't crash into the walls.
 
-Our updated feature extractor gave information on the floor and ceiling of the PixelCopter environment, and allowed the DQN agent to reach at least human level ability on the game. The improved training results can be seen in \ref{fig:pixelcopter-new-features}
+So our updated feature extractor gave information on the floor and ceiling of the PixelCopter environment, and allowed the DQN agent to reach at least human level ability on the game. The improved training results can be seen in \ref{fig:pixelcopter-new-features}
 
 \begin{figure}[h!]
 \includegraphics[width=\textwidth]{pixelcopter-new-features}
@@ -462,6 +363,7 @@ Our updated feature extractor gave information on the floor and ceiling of the P
 \label{fig:pixelcopter-new-features}
 \end{figure}
 
+While the training runs for both the original feature extractor and updated feature extractor look similar, the testing results showcase the superiority of our feature extractor.
 The final testing results for our PixelCopter agents can be seen in \ref{fig:pixel-average-steps}.
 Note that the maximum score is the average maximum score attained on each run, showing us the absolute highest that each agent can perform. 
 
@@ -473,7 +375,7 @@ Notice in \ref{fig:transfer-training} how we don't achieve the same levels of pe
 
 \begin{figure}[h!]
 \includegraphics[width=\textwidth]{pixelcopter-transfer}
-\caption{6 different runs for the DQN on PixelCopter, using weights pretrained on FlappyBird. The x-axis shows episode number, while the y-axis shows episode length.}
+\caption{4 different runs for the DQN on PixelCopter, using weights pretrained on FlappyBird. The x-axis shows episode number, while the y-axis shows episode length.}
 \label{fig:transfer-training}
 \end{figure}
 
@@ -496,11 +398,11 @@ Notice in \ref{fig:transfer-training} how we don't achieve the same levels of pe
     \end{tabular}
 \\
 \end{tabular}
-\caption{Several agents' performances on PixelCopter.}
+\caption{Several agents' performances on PixelCopter. Note how transfer learning with frozen layers performs markedly lower than the other agents.}
 \label{fig:pixel-average-steps}
 \end{table}
 
-The final results showed how the DQN agent trained without transfer learning and with our improved feature extractor performed the best on PixelCopter.
+The final results showed how the DQN agent trained without transfer learning and with our improved feature extractor had the best performance on PixelCopter.
 
 
 \section{Analysis}
@@ -509,6 +411,7 @@ The final results showed how the DQN agent trained without transfer learning and
 The graphs shown in \ref{fig:other-training} and \ref{fig:pixelcopter-new-features} demonstrate the effectiveness of feature engineering for PixelCopter.
 With properly chosen features, we saw a vast improvement in performance, to the point where we went from effectively random movements to at least human level ability in the game.
 Choosing the features wasn't a particularly difficult process -- we simply modeled the features after those found in FlappyBird, since we already knew the features that FlappyBird used and our DQN agent was able to learn FlappyBird effectively in a relatively short amount of time.
+The logic behind adding the next and next next features was that the agent needed to `see' what was ahead to be able to avoid it, just like humans do!
 
 In addition to the gains from choosing proper feature extractors, the decision to use feature extractors over raw pixel input proved to be a prudent choice. 
 It is well documented that training a DQN agent from scratch with pixel inputs takes hundreds of thousands or even millions of iterations.
@@ -520,6 +423,7 @@ The aim of using transfer learning was to improve the average performance of DQN
 Despite trying multiple model architectures for transfer learning, with different layers frozen vs. not frozen, we weren't able to determine that transfer learning in this specific task was effectual.
 In particular, trying to freeze the hidden layers of the model was ineffective because we simply could not encode enough information on how to play the game in solely the input and output layers.
 This was especially prevalent because of how we used dummy features making the FlappyBird observate space similar to the PixelCopter observation space -- since the dummy features always had values of 0 in FlappyBird, it was difficult to learn the new features in PixelCopter that weren't always 0.
+Freezing transferred layers did have one tiny benefit -- the reduction in number of training parameters made training and inference slightly faster.
 
 We theorize that the majority of the gains transfer learning has shown on reinforcement learning tasks in gameplay have come from the convolutional neural network not having to be trained from scratch, and less so from the fully connected layers that follow.
 Because we opted for feature engineering over a CNN, we lost out on the performance gain that would have resulted from transfer learning.
