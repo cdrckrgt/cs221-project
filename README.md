@@ -17,14 +17,9 @@ Inside each of these `.py` files is the infrastructure used for training agents 
 They mostly follow from the reference implementations in the keras-rl library, with deviations explained in the source file.
 
 Our workflow is generally as follows:
-1. run a
-Inside each of these `.py` files is the infrastructure used for training agents on different games.
-They mostly follow from the reference implementations in the keras-rl library, with deviations explained in the source file.
-
-Our workflow is generally as follows:
 1. run a `.py` file.
 2. in a separate terminal, open up an instance of tensorboard so that we may follow its performance
 3. determine the best way to change the model and improve performance
 4. repeat
 
-We also have a small `analysis` folder, where we kept some of the scripts we used to analyze our results. 
+We also have a small `analysis` folder, where we kept some of the scripts we used to analyze our results, some of which are stored in `testruns` but are otherwise kept in the `writeup` folder, which contains all the `.tex` files that were used to create our reports. 
