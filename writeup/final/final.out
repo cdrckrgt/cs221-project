@@ -1,5 +1,5 @@
 \BOOKMARK [1][-]{section.1}{Introduction}{}% 1
-\BOOKMARK [1][-]{section.2}{Literature Review}{}% 2
+\BOOKMARK [1][-]{section.2}{Related Work}{}% 2
 \BOOKMARK [1][-]{section.3}{Game Mechanics}{}% 3
 \BOOKMARK [1][-]{section.4}{Approach}{}% 4
 \BOOKMARK [2][-]{subsection.4.1}{Infrastructure}{section.4}% 5
@@ -9,7 +9,12 @@
 \BOOKMARK [2][-]{subsection.5.3}{Target Network}{section.5}% 9
 \BOOKMARK [2][-]{subsection.5.4}{Annealed -greedy Policy}{section.5}% 10
 \BOOKMARK [2][-]{subsection.5.5}{Model Architecture}{section.5}% 11
-\BOOKMARK [1][-]{section.6}{Preliminary Results}{}% 12
-\BOOKMARK [2][-]{subsection.6.1}{Vanilla DQN}{section.6}% 13
-\BOOKMARK [2][-]{subsection.6.2}{Transfer Learning}{section.6}% 14
-\BOOKMARK [2][-]{subsection.6.3}{Analysis}{section.6}% 15
+\BOOKMARK [1][-]{section.6}{Results}{}% 12
+\BOOKMARK [2][-]{subsection.6.1}{DQN on FlappyBird}{section.6}% 13
+\BOOKMARK [2][-]{subsection.6.2}{DQN on PixelCopter}{section.6}% 14
+\BOOKMARK [2][-]{subsection.6.3}{Transfer Learning on PixelCopter}{section.6}% 15
+\BOOKMARK [1][-]{section.7}{Analysis}{}% 16
+\BOOKMARK [2][-]{subsection.7.1}{Effectiveness of Feature Engineering}{section.7}% 17
+\BOOKMARK [2][-]{subsection.7.2}{Effectiveness of Transfer Learning}{section.7}% 18
+\BOOKMARK [2][-]{subsection.7.3}{Expansion to Pixel Inputs}{section.7}% 19
+\BOOKMARK [1][-]{section.8}{Conclusion and Future Work}{}% 20

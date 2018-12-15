@@ -31,6 +31,7 @@
 \graphicspath{ {./images/} }
 \usepackage{algorithm}
 \usepackage{algpseudocode}  % including algorithms
+\usepackage{verbatim}
 
 \title{Deep Reinforcement Learning and Transfer Learning with FlappyBird}
 
@@ -69,12 +70,10 @@ In this project we aim to apply transfer learning to the popular video game \tex
 \section{Introduction}
 Reinforcement learning is a technique for solving certain decision tasks, where an agent attempts to maximize a long-term reward through trial and error. 
 This trial and error paradigm is better explained through the lens of exploration and exploitation: the agent must decide whether it explores and learns new information, or exploits the current policy to maximize reward.
-We will primarily explore the applicability of deep Q-learning, a deep reinforcement learning algorithm, to the FlappyBird game.
-In addition, we intend to explore the impact of transfer learning, a machine learning technique where a model developed for a specific task is reused as the starting point for a model in a second task. 
-Being able to transfer learn will allow us to develop a more general model for different tasks, saving time and effort.
-In particular, we aim to see whether transfer learning will speed up training time to reach the same performance level as the DQN model.
+We primarily explore the applicability of deep Q-learning, a deep reinforcement learning algorithm, to the FlappyBird game.
+In addition, we explore the impact of transfer learning, a machine learning technique where a model developed for a specific task is reused as the starting point for a model in a second task.
 
-\section{Literature Review}
+\section{Related Work}
 The impetus behind our project is DeepMind's paper, "Playing Atari with Deep Reinforcement Learning". Mnih et al. were able to show how a Deep Q-Network could take raw image pixels from an Atari game and estimate the $Q$ function. \cite{deepmind}
 Their model also takes advantage of recent advances in convolutional neural networks for image processing, a target network for stabilizing policy updates, and experience replay for a more efficient use of previous experience.
 Transfer learning is the idea that generalization occurs both within tasks and across tasks. \cite{transfer}
@@ -96,8 +95,10 @@ The actions for every state are the same: the bird can flap its wings or not.
 The only exception to this are the end states $s_{end}$, where the bird collides with a pipe or the ground.
 In these cases, there are no actions to take, and the episode ends.
 
-We have a similar model for \textit{PixelCopter}, the game we plan on transfer learning with.
-These games are similar in terms of objective and action/observation spaces, so we hope that by applying transfer learning we are able to speed up training time and perhaps maximum absolute reward.
+We have a similar model for \textit{PixelCopter}, the game we perform transfer learning with. The games are similar in terms of objective and action/observation spaces. 
+The games differ in that the obstacles in the game are inverted, i.e., instead of trying to fly between two pipes as in FlappyBird the player must try to fly around a central pipe in PixelCopter.
+The floor and ceiling of the PixelCopter game also follows a sinusoidal pattern, another deviation from FlappyBird.
+
 
 \section{Approach}
 
@@ -108,21 +109,34 @@ Thus, it will be necessary to use either function approximation to generalize to
 We envision using Deep Q-networks as a nice foray into deep learning, given our experience with Q-learning.
 The DQN model uses a neural network to approximate the Q action-value function, and allows for better generalization than the standard Q-learning approach.
 
-Furthermore, we will demonstrate the ability for policies learned through deep reinforcement learning on  other games to transfer to FlappyBird.
+Furthermore, we will demonstrate the ability for policies learned through deep reinforcement learning on FlappyBird to transfer to other games, like Pixelcopter.
 This has been demonstrated before, particularly through the use of convolutional neural networks for playing games directly from pixels. \cite{deepmind}
 In our case specifically, we will develop a Q-network parameterized by weights $\theta_{FlappyBird}$ that performs `well enough' on FlappyBird, along with Q-networks parameterized by $\theta_{PixelCopter}$ that perform `well enough' on the game PixelCopter.
 These networks will be initialized through Xavier initialization. \cite{xavier}
 Once we have this, we will begin training new Q-networks parameterized by $\theta'_{PixelCopter}$ that were initialized with $\theta_{FlappyBird}$.
-We do this by fixing weights up until the final hidden layer, and solely training those weights.
-This gives the effect of reducing the number of parameters needed for optimization, making our training faster and more efficient.
-We will then compare the training times and absolute performance of the $\theta$ and $\theta'$ models, demonstrating the increase in efficiency or performance that transfer learning entails.
+We then compare the training times and absolute performance of the $\theta$ and $\theta'$ models, demonstrating the increase in efficiency or performance that transfer learning entails.
+
+Finally, we use feature engineering to extract relevant features from the game's state. 
+DQN as seen in Mnih et al. makes extensive use of convolutional neural networks to extract features directly from the image representation of the game.
+Since we do not aim to experiment with CNNs for this purpose at this time, we write our own custom feature extractors for each game such that state spaces are very similar for both, in the hopes that this might aid with transfer learning.
+The features are color coded in \ref{fig:features} to show the similar features across both games.
+Note that the features here are the ones that we've defined after our preliminary experiments on PixelCopter, so they represent our feature extractor on PixelCopter and not the original feature extractor.
+
+\begin{figure}[h!]
+\begin{center}
+\includegraphics[width=0.3\textwidth]{pixelcopter-features}
+\includegraphics[width=0.3\textwidth]{flappybird-features}
+\end{center}
+\caption{The lines represent distances to several objects, while diamonds represent locations. The arrow represents the vertical velocity of the player.}
+\label{fig:features}
+\end{figure}
 
 \subsection{Infrastructure}
 
 The infrastructure for the game comes mostly from the PyGame Learning Environment, OpenAI gym, and keras-rl packages. 
 The PyGame Learning Environment provides a nicely wrapped implementation of FlappyBird, complete with sprites and the relevant game mechanics built in. \cite{ple} \cite{openaigym} \cite{ale}
 Keras-rl provides a deep reinforcement learning framework that gives us a simple interface for training agents. 
-We take advantage of these two here, writing simple wrappers for the PLE game instance so that it is compatible with keras-rl. \cite{kerasrl}
+We take advantage of these two here, writing wrappers for the PLE game instance so that it is compatible with keras-rl. \cite{kerasrl}
 The keras-rl package additionally provides an implementation of several algorithms that are applicable to FlappyBird, particularly Deep Q-networks and the SARSA algorithm.
 For the transfer learning portion of the project, we saved weights info \texttt{hdf5} files with the Keras package.
 The neural networks and much of the other deep learning architecture was also created in Keras, with a TensorFlow backend. \cite{keras} \cite{tensorflow}
@@ -203,6 +217,7 @@ The algorithm, lifted from Mnih's paper, is described in \ref{alg:dqn}.
 Additionally, the algorithm presented in Mnih's paper makes use of experience replay to smooth learning and prevent divergence.
 Rather than performing gradient updates on each consecutive sample, samples are stored in a ring buffer and sampled randomly during the learning phase of the algorithm. 
 This has the effect of improving sample efficiency and removing the dependence of each training update on the previous training update.
+Adding experience replay makes the problem conceptually similar to supervised learning, where we continuously store and update a cache of `experience' and fit our Q-function to it.
 
 \subsection{Target Network}
 Finally, we make use of a target network to further stabilize the training process. 
@@ -213,26 +228,22 @@ With this identical model, we may compute the same targets, albeit with less var
 \subsection{Annealed $\epsilon$-greedy Policy}
 Rather than use the standard $\epsilon$-greedy policy, we opted to use a policy that annealed $\epsilon$ from some value $\alpha$ to some value $\beta$ over training.
 Our goal was to incentivize exploration early on, but revert back to the usually $\epsilon$-greedy policy after some about of training.
+This came from our intuition that our model would not know a great deal early on in the training, so it was most effective to explore the game's states than exploit a weak policy.
 
 
 \subsection{Model Architecture}
-Since we use as input to the Q-network the internal game state representation as opposed to the raw pixel inputs, we don't make use of a convolutional neural network to learn features directly from the game's pizels.
+Since we use as input to the Q-network the internal game state representation as opposed to the raw pixel inputs, we don't make use of a convolutional neural network to learn features directly from the game's pixels.
 We instead make use of a multi-layered perceptron that takes as input the game's state in vector form.
-In the case of FlappyBird, the state vector is a vector in $\mathbb{R}^8$, and contains the bird's position, velocity, and the distance, top, and bottom positions of the next two pipes.
-The dimensionality of the input differed for each game we worked with, but we kept the dimensionality of the hidden layers the same for each game so that we could experiment with transfer learning.
-We have three fully connected hidden layers, with dimensionality 256, 128, and 16.
+In the case of FlappyBird, the state vector is a vector in $\mathbb{R}^11$, and contains the bird's position, velocity, and the distance, top, and bottom positions of the next two pipes.
+We also added three null features to the game's state, since PixelCopter had a feature representation in $\mathbb{R}^{11}$.
+PixelCopter had the same features as FlappyBird, with three additional ones: the distance to the next obstacle and the positions of the top and bottom of the obstacle.
+We have three fully connected hidden layers, with dimensionality 256, 128, and 16. 
+Each layer was followed by a ReLU activation, while the output layer was instead followed by a linear activation. 
+This leaves us with 38,066 trainable parameters, a relatively small network compared to those that are used to learn games from pixel input.
 The outputs of the Q-network for each game were the Q-values of all actions in the action space for that game.
 In the case of FlappyBird, the output was two Q-values in $\mathbb{R}$, one for the action to jump, and the null action.
 
-\section{Results}
-
-\subsection{Vanilla DQN}
-After finalizing the implementation of the DQN algorithm, we experimented with different hyperparameters and had to define performance metrics to compare the base DQN models with the transfer learned models. 
-The hyperparameters for the models trained from scratch are shown in table \ref{hyperparams-xavier}.
-We see in the graph \ref{fig:flappy-training-eps} the variance in episode reward over different random seeds for the FlappyBird game.
-Each run was trained for 30,000 iterations, and we see the ability for DQN to learn to play the game sometimes but fail other times.
-We aim to decrease this variance soon through more hyperparameter optimization and tinkering with the model architecture more.
-The DQN performs well above the ability of the average human when it does learn to play the game, since it can sometimes average scores in the thousands while testing.
+\begin{comment}
 
 \begin{table}[h!]
 \centering
@@ -252,7 +263,15 @@ The DQN performs well above the ability of the average human when it does learn 
     \hline
     $\gamma$ & 0.99 \\
     \hline
-    Annealed $\epsilon$ & 0.4 $\rightarrow$ 0.1 \\
+    Annealed $\epsilon$ & 0.2 $\rightarrow$ 0.05 \\
+    \hline
+    Annealing Steps & 30,000 \\
+    \hline
+    Warm-up Steps & 100 \\
+    \hline
+    Memory Size Limit & 50,000 \\
+    \hline
+    Training Steps & 75,000 \\
     \hline
     \multicolumn{2}{| c |}{Reward Profile} \\ 
     \hline
@@ -270,15 +289,144 @@ The DQN performs well above the ability of the average human when it does learn 
     \hline
     \multicolumn{2}{| c |}{PixelCopter Hyperparameters} \\ 
     \hline
-    Target Model Update & 1e-1 \\
+    Target Model Update & 1e-2 \\
     \hline
     Learning Rate & 1e-3 \\
     \hline
-    $\dots$ & $\dots$ \\
+    $\gamma$ & 0.99 \\
+    \hline
+    Annealed $\epsilon$ & 0.2 $\rightarrow$ 0.05 \\
+    \hline
+    Annealing Steps & 75,000 \\
+    \hline
+    Warm-up Steps & 100 \\
+    \\subsection{Transfer Learning}
+We show in \ref{fig:transfer-training} the effectiveness of using pre-trained weights from FlappyBird on the game PixelCopter. From the six runs we ran, we found that transfer learning on average had no major impact on the average number of steps per episode. However, the average maximum step per test run was higher using our pre-trained weights. (move Figure 3 out of analysis and into here) hline
+    Memory Size Limit & 100,000 \\
+    \hline
+    Training Steps & 150,000 \\
+    \hline
+    \multicolumn{2}{| c |}{Reward Profile} \\ 
     \hline
     tick & $0.1$ \\
     \hline
-    passed block & $1.0$ \\
+    passed pipe & $1.0$ \\
+    \hline
+    collided & $-10.0$ \\
+    \hline
+    \end{tabular}
+\\
+\end{tabular}
+\caption{These hyperparameters were obtained with lots of trial and error. If not noted here, the hyperparameter was left as the default value in Keras.}
+\label{hyperparams-xavier}
+\end{table}
+
+\begin{figure}[h!]
+\includegraphics[width=\textwidth]{flappy-training-eps}
+\caption{6 different runs for DQN on FlappyBird. The x-axis shows episode number, while the y-axis shows episode length.}
+\label{fig:flappy-training-eps}
+\end{figure}
+
+\begin{figure}[h!]
+\includegraphics[width=\textwidth]{pixelcopter-training}
+\caption{5 different runs for DQN on PixelCopter. The x-axis shows episode number, while the y-axis shows episode length.}
+\label{fig:other-training}
+\end{figure}
+We show the performance of the DQN trained on the PixelCopter training in \ref{fig:other-training}.
+For both games, we show the episode length as a proxy for how good the agent performs on the episode.
+The performance of DQN on PixelCopter without transfer learning plateaus very early on, and has a very poor performanc eoverall.
+
+
+
+Flappy bird average number of steps over 15 tests: 14,177.4
+
+
+\subsection{Analysis}
+Our preliminary results showcase that the vanilla DQN model trained on PixelCopter did not generally perform well, even with additional hyperparameter tuning and transfer learning. We decided to increase the number of iterations from 30,000 to 150,000 to see if performance would improve over time. Figure 4 here? Additionally, our preliminary runs involved using transfer learning on solely dense layers. Attempting to combat this issue, we decided to remove x. We ran a total of 40 test runs with 50 episodes per test: 20 of which involved no transfer learning, 10 included transfer learning, and the last 10 included transfer learning with frozen weights.  (y: insert graph and table of averages here). As seen in Figure y, transfer learning with and without frozen weights had no immediate effect on average steps per period.  Additionally, the preliminary results we found indicating a higher average maximum step/reward was not prevalent, as our additional runs seems to combat this finding. 
+
+\end{comment}
+
+\section{Results}
+
+\subsection{DQN on FlappyBird}
+
+The DQN agent trained on FlappyBird reached superhuman levels of ability. 
+The final hyperparameters are described in \ref{hyperparams-xavier}.
+We see in \ref{fig:flappy-training-eps} the variance in episode reward over different random seeds for the FlappyBird game.
+Each run was trained over 75,000 iterations, and we see the ability for the DQN agent to learn to play the game sometimes but fail other times.
+The DQN agent performs well above the ability of the average human when it does learn to play the game, since it averages 14,177 steps before dying (at 24 frames per second, this comes out to over 9 hours without dying!).
+
+\begin{figure}[h!]
+\includegraphics[width=\textwidth]{flappy-training-eps}
+\caption{6 different runs for DQN on FlappyBird. The x-axis shows episode number, while the y-axis shows episode length.}
+\label{fig:flappy-training-eps}
+\end{figure}
+
+\begin{table}[h!]
+\centering
+\begin{tabular}{ll}
+
+\multicolumn{2}{ c }{ \textbf{Hyperparameters for Xavier-initialized networks} } \\
+
+\\
+
+    \begin{tabular}{| c | c |}
+    \hline
+    \multicolumn{2}{| c |}{FlappyBird Hyperparameters} \\ 
+    \hline
+    Target Model Update & 1e-2 \\
+    \hline
+    Learning Rate & 1e-3 \\
+    \hline
+    $\gamma$ & 0.99 \\
+    \hline
+    Annealed $\epsilon$ & 0.2 $\rightarrow$ 0.05 \\
+    \hline
+    Annealing Steps & 30,000 \\
+    \hline
+    Warm-up Steps & 100 \\
+    \hline
+    Memory Size Limit & 50,000 \\
+    \hline
+    Training Steps & 75,000 \\
+    \hline
+    \multicolumn{2}{| c |}{Reward Profile} \\ 
+    \hline
+    tick & $0.1$ \\
+    \hline
+    passed pipe & $1.0$ \\
+    \hline
+    collided & $-10.0$ \\
+    \hline
+    \end{tabular}
+
+&
+
+    \begin{tabular}{| c | c |}
+    \hline
+    \multicolumn{2}{| c |}{PixelCopter Hyperparameters} \\ 
+    \hline
+    Target Model Update & 1e-2 \\
+    \hline
+    Learning Rate & 1e-3 \\
+    \hline
+    $\gamma$ & 0.99 \\
+    \hline
+    Annealed $\epsilon$ & 0.2 $\rightarrow$ 0.05 \\
+    \hline
+    Annealing Steps & 75,000 \\
+    \hline
+    Warm-up Steps & 100 \\
+    \hline
+    Memory Size Limit & 100,000 \\
+    \hline
+    Training Steps & 150,000 \\
+    \hline
+    \multicolumn{2}{| c |}{Reward Profile} \\ 
+    \hline
+    tick & $0.1$ \\
+    \hline
+    passed pipe & $1.0$ \\
     \hline
     collided & $-10.0$ \\
     \hline
@@ -291,79 +439,111 @@ The DQN performs well above the ability of the average human when it does learn 
 \label{hyperparams-xavier}
 \end{table}
 
-\begin{figure}[h!]
-\includegraphics[width=\textwidth]{flappy-training-eps}
-\label{fig:flappy-training-eps}
-\caption{6 different runs for DQN on FlappyBird. The x-axis shows episode number, while the y-axis shows episode length.}
-\end{figure}
+\subsection{DQN on PixelCopter}
+
+The DQN agent trained on the version of PixelCopter that was pulled from the source repo did not perform well.
+We saw that despite trying longer training times and optimizing several hyperparameters, the agent would not learn to play the game from the feature representation that the creators shipped with the game.
+The training performance for the original feature extractor on PixelCopter can be seen in \ref{fig:other-training}.
+The original feature extractor did not contain information about the floor and ceiling of the environment, leading the agent to ignore the floor and ceiling and eventually crash into them.
 
 \begin{figure}[h!]
 \includegraphics[width=\textwidth]{pixelcopter-training}
-\caption{5 different runs for DQN on PixelCopter. The x-axis shows episode number, while the y-axis shows episode length.}
+\caption{5 different runs for vanilla DQN on PixelCopter without optimal feature engineering. The x-axis shows episode number, while the y-axis shows episode length.}
 \label{fig:other-training}
 \end{figure}
-We show the performance of the DQN trained on the PixelCopter training in \ref{fig:other-training}.
-For both games, we show the episode length as a proxy for how good the agent performs on the episode.
-The performance of DQN on PixelCopter without transfer learning plateaus very early on, and has a very poor performanc eoverall.
 
-\subsection{Transfer Learning}
-We show in \ref{fig:transfer-training} the effectiveness of using pre-trained weights from FlappyBird on the game PixelCopter.
+We changed the features that were extracted from the game mostly for this reason, but also because we wanted the feature representations of PixelCopter and FlappyBird to be as similar as possible for the transfer learning portion of our experiments.
+
+Our updated feature extractor gave information on the floor and ceiling of the PixelCopter environment, and allowed the DQN agent to reach at least human level ability on the game. The improved training results can be seen in \ref{fig:pixelcopter-new-features}
+
+\begin{figure}[h!]
+\includegraphics[width=\textwidth]{pixelcopter-new-features}
+\caption{Several runs of PixelCopter training after installing a new feature extractor. The x-axis shows episode number, while the y-axis shows episode length.}
+\label{fig:pixelcopter-new-features}
+\end{figure}
+
+The final testing results for our PixelCopter agents can be seen in \ref{fig:pixel-average-steps}.
+Note that the maximum score is the average maximum score attained on each run, showing us the absolute highest that each agent can perform. 
+
+\subsection{Transfer Learning on PixelCopter}
+We implement this in a couple of different ways, with a fully trainable initialized network, and with an initialized network with frozen layers, specifically all layers but the first frozen.
+There were two ways in which we tried transfer learning: simply initializing all weights with the final weights from FlappyBird, and also initializing all weights with the final weights from FlappyBird but then freezing some layers.
+The latter implementation provides the effect of reducing the number of parameters needed for optimization, giving us a faster training time.
+Notice in \ref{fig:transfer-training} how we don't achieve the same levels of performance as \ref{fig:pixelcopter-new-features}.
 
 \begin{figure}[h!]
 \includegraphics[width=\textwidth]{pixelcopter-transfer}
+\caption{6 different runs for the DQN on PixelCopter, using weights pretrained on FlappyBird. The x-axis shows episode number, while the y-axis shows episode length.}
 \label{fig:transfer-training}
-\caption{6 different runs for the DQN on PixelCopter, using weights pretrained on FlappyBird.}
 \end{figure}
 
+\begin{table}[h!]
+\centering
+\begin{tabular}{ll}
+\\
+    \begin{tabular}{| c | c | c | c | c |}
+    \hline
+    \multicolumn{5}{| c |}{PixelCopter Average Steps Per Episode} \\ 
+    \hline
+     & No TL or Feature Extractor & No TL & TL & TL with Frozen Layers \\
+    \hline
+    Mean & 246.47 & 373.52 & 348.58 & 148.05 \\
+    \hline
+    Standard Deviation & 193.91 & 377.32 & 306.87 & 116.89 \\
+    \hline
+    Avg. Max & 759.1 & 2552.0 & 1434.0 & 612.4 \\
+    \hline
+    \end{tabular}
+\\
+\end{tabular}
+\caption{Several agents' performances on PixelCopter.}
+\label{fig:pixel-average-steps}
+\end{table}
 
-\subsection{Analysis}
-We are still working out the kinks from transfer learning with solely dense layers. 
-One of the approaches we may try is just changing the input from the state vector representation to the image, since convolutional neural nets have been shown to transfer learn well with CNNs.
-The traditional method of freezing some subset of middle layers and only training the outer layers hasn't proved effective so far.
+The final results showed how the DQN agent trained without transfer learning and with our improved feature extractor performed the best on PixelCopter.
 
-Additionally, we have yet to begin training on machines stronger than our laptops.
-Because of this, we've haven't been able to practically train for periods of longer than 50,000 iterations.
-Because of the nature of some of these games, it might take longer than that to see some improvement, especially if we were to generalize the DQN to receieve images as input.
-Despite this, we were still able to get some good results on the vanilla DQN and FlappyBird.
-
-The vanilla DQN model trained on PixelCopter doesn't generally perform well, even with long training times and hyperparameter tuning.
-Our hypothesis is that the state vector that the game produces doesn't yield enough information about the game for the model to learn how to play. 
-Only the wall directly above and below the Pixelcopter is shown to the model, leaving the rest of the terrain unknown until the PixelCopter flies past it.
-One way to approach this issue is to simply feed the pixel representation of the game's state as image input to the model, which would necessitate the use of CNNs.
-
-Because the performance of DQN on PixelCopter was poor to begin with, we hoped to achieve better results through transfer learning.
-After running tests with transfer learning, we see similar performance to the non-transfer-learned DQN model on PixelCopter, leading us to believe that the transfer learning was ineffectual.
-We don't know the effectiveness of transfer learning on solely fully-connected layers, and hopefully this goes to show us that we might want to continue with CNNs and learning from pixel input in the future.
-
-
-
-\section{Results}
-
-
-in here is just the presentation of our results, no analysis yet.
-include in here stuff like graphs, numbers, descriptions of how the agent trained and performed, even stuff like anecdotes/empirical evidence about where the model would fail or succeed particularly badly/well
-
-\subsection{DQN on FlappyBird}
-
-\subsection{DQN on PixelCopter}
-
-\subsection{Transfer Learning on PixelCopter}
 
 \section{Analysis}
 
-include in here our rationalization of our results
-stuff like: how a particular model design decision influenced the results of our model, why we think that an agent performed well or poorly on some stuff, speculation on what could be done to improve the model, 
-
 \subsection{Effectiveness of Feature Engineering}
+The graphs shown in \ref{fig:other-training} and \ref{fig:pixelcopter-new-features} demonstrate the effectiveness of feature engineering for PixelCopter.
+With properly chosen features, we saw a vast improvement in performance, to the point where we went from effectively random movements to at least human level ability in the game.
+Choosing the features wasn't a particularly difficult process -- we simply modeled the features after those found in FlappyBird, since we already knew the features that FlappyBird used and our DQN agent was able to learn FlappyBird effectively in a relatively short amount of time.
+
+In addition to the gains from choosing proper feature extractors, the decision to use feature extractors over raw pixel input proved to be a prudent choice. 
+It is well documented that training a DQN agent from scratch with pixel inputs takes hundreds of thousands or even millions of iterations.
+We saw results from our feature extracted version of DQN after only tens of thousands of iterations -- a great improvement.
+
 
 \subsection{Effectiveness of Transfer Learning}
+The aim of using transfer learning was to improve the average performance of DQN on PixelCopter to superhuman levels, as we did with FlappyBird.
+Despite trying multiple model architectures for transfer learning, with different layers frozen vs. not frozen, we weren't able to determine that transfer learning in this specific task was effectual.
+In particular, trying to freeze the hidden layers of the model was ineffective because we simply could not encode enough information on how to play the game in solely the input and output layers.
+This was especially prevalent because of how we used dummy features making the FlappyBird observate space similar to the PixelCopter observation space -- since the dummy features always had values of 0 in FlappyBird, it was difficult to learn the new features in PixelCopter that weren't always 0.
 
-\subsection{Model Architecture Considerations}
+We theorize that the majority of the gains transfer learning has shown on reinforcement learning tasks in gameplay have come from the convolutional neural network not having to be trained from scratch, and less so from the fully connected layers that follow.
+Because we opted for feature engineering over a CNN, we lost out on the performance gain that would have resulted from transfer learning.
+The relatively small size of the neural net that approximated the Q-function didn't benefit very much in terms of training speed, even when the state spaces of the game were made to be as similar as possible.
 
 \subsection{Expansion to Pixel Inputs}
+The vanilla DQN model trained on PixelCopter did not generally perform well, even with much longer training times and hyperparameter tuning. Our hypothesis is that the state vector that the game produces doesn't yield enough information about the game for the model to learn how to play. Only the wall directly above and below the Pixelcopter is shown to the model, leaving the rest of the terrain unknown until the PixelCopter flies past it. One way to approach this issue is to simply feed the pixel representation of the game's state as image input to the model, which would necessitate the use of CNNs. We don't know the effectiveness of transfer learning on solely fully-connected layers, and hopefully this goes to show us that we might want to continue with CNNs and learning from pixel input in the future.
+
+Because of what was discussed on the effectiveness of transfer learning, many times throughout the project we considered moving towards pixel input. 
+The result would be more impressive -- not having to encode information about the game would make this end-to-end reinforcement learning task much cleaner and robust.
+We opted not to do this early on because we had little experience with convolutional neural networks and image tasks.
+This, combined with our desire to iterate quickly over model architectures, hyperparameters, etc. pushed us to use feature engineering over convolutional neural networks. 
+
+Now that we know the ineffectiveness of transfer learning on solely fully connected layers, we would have definitely chosen to use pixels as input.
 
 \section{Conclusion and Future Work}
+Deep reinforcement learning has proved to be an excellent player of FlappyBird and PixelCopter, considering that with both games on the vanilla DQN agents, we could not beat the trained agent.
+Our hopes of transfer learning speeding up training time and improving absolute performance were not met, and we determined that transfer learning didn't have a significant impact on the training process.
 
+In the future, we'd extend our experiment to compare our feature extractors performance to that of a convolutional neural network. 
+We think that our methodology applied to CNNs would have led to a much more successful experiment. 
+In addition to this, we hope to apply reinforcement learning to games with higher complexity, much like what OpenAI has done with Dota and DeepMind has done with Go.
+On an even wider scale, we foresee that many computationally difficult optimization problems can be cast to reinforcement learning problems, where we might achieve decent approximate solutions in smaller timeframes than conventional techniques.
+This could impact a wide array of peoples, industries, and technologies around the world, so we think it's an exciting thing to study!
 
 \bibliography{ref}
 \bibliographystyle{plain}

@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.18 (TeX Live 2017) (preloaded format=pdflatex 2017.5.23)  14 DEC 2018 14:34
+This is pdfTeX, Version 3.14159265-2.6-1.40.18 (TeX Live 2017) (preloaded format=pdflatex 2017.5.23)  14 DEC 2018 20:15
 entering extended mode
  \write18 enabled.
  %&-line parsing enabled.
@@ -674,24 +674,30 @@ Document Style algorithmicx 1.2 - a greatly improved `algorithmic' style
 \ALG@tmplength=\skip57
 )
 Document Style - pseudocode environments for use with the `algorithmicx' style
-) (./final.aux)
+) (/usr/local/texlive/2017/texmf-dist/tex/latex/tools/verbatim.sty
+Package: verbatim 2014/10/28 v1.5q LaTeX2e package for verbatim enhancements
+\every@verbatim=\toks28
+\verbatim@line=\toks29
+\verbatim@in@stream=\read1
+)
+(./final.aux)
 \openout1 = `final.aux'.
 
-LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 55.
-LaTeX Font Info:    ... okay on input line 55.
-LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 55.
-LaTeX Font Info:    ... okay on input line 55.
-LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 55.
-LaTeX Font Info:    ... okay on input line 55.
-LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 55.
-LaTeX Font Info:    ... okay on input line 55.
-LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 55.
-LaTeX Font Info:    ... okay on input line 55.
-LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 55.
-LaTeX Font Info:    ... okay on input line 55.
-LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 55.
-LaTeX Font Info:    ... okay on input line 55.
-LaTeX Font Info:    Try loading font information for T1+ptm on input line 55.
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 56.
+LaTeX Font Info:    ... okay on input line 56.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 56.
+LaTeX Font Info:    ... okay on input line 56.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 56.
+LaTeX Font Info:    ... okay on input line 56.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 56.
+LaTeX Font Info:    ... okay on input line 56.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 56.
+LaTeX Font Info:    ... okay on input line 56.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 56.
+LaTeX Font Info:    ... okay on input line 56.
+LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 56.
+LaTeX Font Info:    ... okay on input line 56.
+LaTeX Font Info:    Try loading font information for T1+ptm on input line 56.
  (/usr/local/texlive/2017/texmf-dist/tex/latex/psnfss/t1ptm.fd
 File: t1ptm.fd 2001/06/04 font definitions for T1/ptm.
 )
@@ -762,7 +768,7 @@ File: t1ptm.fd 2001/06/04 font definitions for T1/ptm.
 * (1in=72.27pt=25.4mm, 1cm=28.453pt)
 
 \AtBeginShipoutBox=\box30
-Package hyperref Info: Link coloring OFF on input line 55.
+Package hyperref Info: Link coloring OFF on input line 56.
 (/usr/local/texlive/2017/texmf-dist/tex/latex/hyperref/nameref.sty
 Package: nameref 2016/05/21 v2.44 Cross-referencing by name of section
 
@@ -771,15 +777,15 @@ Package: gettitlestring 2016/05/16 v1.5 Cleanup title references (HO)
 )
 \c@section@level=\count129
 )
-LaTeX Info: Redefining \ref on input line 55.
-LaTeX Info: Redefining \pageref on input line 55.
-LaTeX Info: Redefining \nameref on input line 55.
+LaTeX Info: Redefining \ref on input line 56.
+LaTeX Info: Redefining \pageref on input line 56.
+LaTeX Info: Redefining \nameref on input line 56.
 
 (./final.out) (./final.out)
 \@outlinefile=\write3
 \openout3 = `final.out'.
 
-LaTeX Info: Redefining \microtypecontext on input line 55.
+LaTeX Info: Redefining \microtypecontext on input line 56.
 Package microtype Info: Generating PDF output.
 Package microtype Info: Character protrusion enabled (level 2).
 Package microtype Info: Using default protrusion set `alltext'.
@@ -800,12 +806,12 @@ File: mt-ptm.cfg 2006/04/20 v1.7 microtype config. file: Times (RS)
 \scratchbox=\box31
 \nofMPsegments=\count131
 \nofMParguments=\count132
-\everyMPshowfont=\toks28
+\everyMPshowfont=\toks30
 \MPscratchCnt=\count133
 \MPscratchDim=\dimen141
 \MPnumerator=\count134
 \makeMPintoPDFobject=\count135
-\everyMPtoPDFconversion=\toks29
+\everyMPtoPDFconversion=\toks31
 ) (/usr/local/texlive/2017/texmf-dist/tex/latex/oberdiek/epstopdf-base.sty
 Package: epstopdf-base 2016/05/15 v2.6 Base part for package epstopdf
 
@@ -824,13 +830,13 @@ File: epstopdf-sys.cfg 2010/07/13 v1.3 Configuration of (r)epstopdf for TeX Liv
 e
 ))
 LaTeX Font Info:    Font shape `T1/ptm/bx/n' in size <17.28> not available
-(Font)              Font shape `T1/ptm/b/n' tried instead on input line 59.
+(Font)              Font shape `T1/ptm/b/n' tried instead on input line 60.
 
 (/usr/local/texlive/2017/texmf-dist/tex/latex/microtype/mt-cmr.cfg
 File: mt-cmr.cfg 2013/05/19 v2.2 microtype config. file: Computer Modern Roman 
 (RS)
 )
-LaTeX Font Info:    Try loading font information for U+msa on input line 59.
+LaTeX Font Info:    Try loading font information for U+msa on input line 60.
 
 (/usr/local/texlive/2017/texmf-dist/tex/latex/amsfonts/umsa.fd
 File: umsa.fd 2013/01/14 v3.01 AMS symbols A
@@ -838,7 +844,7 @@ File: umsa.fd 2013/01/14 v3.01 AMS symbols A
 (/usr/local/texlive/2017/texmf-dist/tex/latex/microtype/mt-msa.cfg
 File: mt-msa.cfg 2006/02/04 v1.1 microtype config. file: AMS symbols (a) (RS)
 )
-LaTeX Font Info:    Try loading font information for U+msb on input line 59.
+LaTeX Font Info:    Try loading font information for U+msb on input line 60.
 
 (/usr/local/texlive/2017/texmf-dist/tex/latex/amsfonts/umsb.fd
 File: umsb.fd 2013/01/14 v3.01 AMS symbols B
@@ -847,8 +853,8 @@ File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 File: mt-msb.cfg 2005/06/01 v1.0 microtype config. file: AMS symbols (b) (RS)
 )
 LaTeX Font Info:    Font shape `T1/ptm/bx/n' in size <10> not available
-(Font)              Font shape `T1/ptm/b/n' tried instead on input line 59.
-LaTeX Font Info:    Try loading font information for T1+cmtt on input line 59.
+(Font)              Font shape `T1/ptm/b/n' tried instead on input line 60.
+LaTeX Font Info:    Try loading font information for T1+cmtt on input line 60.
 
 (/usr/local/texlive/2017/texmf-dist/tex/latex/base/t1cmtt.fd
 File: t1cmtt.fd 2014/09/29 v2.5h Standard LaTeX font definitions
@@ -858,111 +864,173 @@ Package microtype Info: Loading generic settings for font family
 (microtype)             For optimal results, create family-specific settings.
 (microtype)             See the microtype manual for details.
 LaTeX Font Info:    Font shape `T1/ptm/bx/n' in size <12> not available
-(Font)              Font shape `T1/ptm/b/n' tried instead on input line 60.
-
-Underfull \vbox (badness 4981) has occurred while \output is active []
-
+(Font)              Font shape `T1/ptm/b/n' tried instead on input line 61.
  [1
 
 
-{/usr/local/texlive/2017/texmf-var/fonts/map/pdftex/updmap/pdftex.map}] [2]
-Package hyperref Info: bookmark level for unknown algorithm defaults to 0 on in
-put line 176.
- [3]
+{/usr/local/texlive/2017/texmf-var/fonts/map/pdftex/updmap/pdftex.map}]
+<./images/pixelcopter-features.png, id=102, 200.75pt x 355.3275pt>
+File: ./images/pixelcopter-features.png Graphic file (type png)
 
-Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
-(hyperref)                removing `math shift' on input line 213.
+<use ./images/pixelcopter-features.png>
+Package pdftex.def Info: ./images/pixelcopter-features.png used on input line 1
+27.
+(pdftex.def)             Requested size: 119.2467pt x 211.07277pt.
 
+<./images/flappybird-features.png, id=104, 200.75pt x 354.32375pt>
+File: ./images/flappybird-features.png Graphic file (type png)
 
-Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
-(hyperref)                removing `\epsilon' on input line 213.
-
-
-Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
-(hyperref)                removing `math shift' on input line 213.
-
-[4] <./images/flappy-training-eps.png, id=127, 1332.98pt x 612.2875pt>
-File: ./images/flappy-training-eps.png Graphic file (type png)
-
-<use ./images/flappy-training-eps.png>
-Package pdftex.def Info: ./images/flappy-training-eps.png used on input line 29
-5.
-(pdftex.def)             Requested size: 397.48499pt x 182.57588pt.
-
-<./images/pixelcopter-training.png, id=129, 673.39078pt x 309.78235pt>
-File: ./images/pixelcopter-training.png Graphic file (type png)
-
-<use ./images/pixelcopter-training.png>
-Package pdftex.def Info: ./images/pixelcopter-training.png used on input line 3
-01.
-(pdftex.def)             Requested size: 397.48499pt x 182.8598pt.
+<use ./images/flappybird-features.png>
+Package pdftex.def Info: ./images/flappybird-features.png used on input line 12
+8.
+(pdftex.def)             Requested size: 119.2467pt x 210.47652pt.
 
 
 LaTeX Warning: `!h' float specifier changed to `!ht'.
 
-<./images/pixelcopter-transfer.png, id=132, 1341.01pt x 549.05125pt>
-File: ./images/pixelcopter-transfer.png Graphic file (type png)
-
-<use ./images/pixelcopter-transfer.png>
-Package pdftex.def Info: ./images/pixelcopter-transfer.png used on input line 3
-13.
-(pdftex.def)             Requested size: 397.48499pt x 162.73947pt.
-
-
-LaTeX Warning: `!h' float specifier changed to `!ht'.
-
-[5pdfTeX warning (ext4): destination with the same identifier (name{table.1}) h
-as been already used, duplicate ignored
-
-\AtBegShi@Output ...ipout \box \AtBeginShipoutBox 
-                                                  \fi \fi 
-l.328 
-      pdfTeX warning (ext4): destination with the same identifier (name{figure.
+[2] [3pdfTeX warning (ext4): destination with the same identifier (name{figure.
 1}) has been already used, duplicate ignored
 
 \AtBegShi@Output ...ipout \box \AtBeginShipoutBox 
                                                   \fi \fi 
-l.328 
-       <./images/flappy-training-eps.png>] (./final.bbl
-Underfull \vbox (badness 4752) has occurred while \output is active []
+l.173 \begin{equation}
+                       <./images/pixelcopter-features.png> <./images/flappybird
+-features.png>]
+Package hyperref Info: bookmark level for unknown algorithm defaults to 0 on in
+put line 190.
 
- [6pdfTeX warning (ext4): destination with the same identifier (name{figure.2})
+
+Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
+(hyperref)                removing `math shift' on input line 228.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
+(hyperref)                removing `\epsilon' on input line 228.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
+(hyperref)                removing `math shift' on input line 228.
+
+[4] <./images/flappy-training-eps.png, id=153, 1284.8pt x 570.13pt>
+File: ./images/flappy-training-eps.png Graphic file (type png)
+
+<use ./images/flappy-training-eps.png>
+Package pdftex.def Info: ./images/flappy-training-eps.png used on input line 36
+0.
+(pdftex.def)             Requested size: 397.48499pt x 176.38179pt.
+
+
+LaTeX Warning: `!h' float specifier changed to `!ht'.
+
+[5pdfTeX warning (ext4): destination with the same identifier (name{figure.2}) 
+has been already used, duplicate ignored
+
+\AtBegShi@Output ...ipout \box \AtBeginShipoutBox 
+                                                  \fi \fi 
+l.448 
+       <./images/flappy-training-eps.png>]
+<./images/pixelcopter-training.png, id=162, 673.39078pt x 309.78235pt>
+File: ./images/pixelcopter-training.png Graphic file (type png)
+
+<use ./images/pixelcopter-training.png>
+Package pdftex.def Info: ./images/pixelcopter-training.png used on input line 4
+50.
+(pdftex.def)             Requested size: 397.48499pt x 182.8598pt.
+
+<./images/pixelcopter-new-features.png, id=164, 803.62735pt x 307.90031pt>
+File: ./images/pixelcopter-new-features.png Graphic file (type png)
+
+<use ./images/pixelcopter-new-features.png>
+Package pdftex.def Info: ./images/pixelcopter-new-features.png used on input li
+ne 460.
+(pdftex.def)             Requested size: 397.48499pt x 152.2913pt.
+
+
+LaTeX Warning: `!h' float specifier changed to `!ht'.
+
+
+Underfull \vbox (badness 6542) has occurred while \output is active []
+
+ [6pdfTeX warning (ext4): destination with the same identifier (name{table.1}) 
+has been already used, duplicate ignored
+
+\AtBegShi@Output ...ipout \box \AtBeginShipoutBox 
+                                                  \fi \fi 
+l.468 \subsection
+                 {Transfer Learning on PixelCopter}pdfTeX warning (ext4): desti
+nation with the same identifier (name{figure.3}) has been already used, duplica
+te ignored
+
+\AtBegShi@Output ...ipout \box \AtBeginShipoutBox 
+                                                  \fi \fi 
+l.468 \subsection
+                 {Transfer Learning on PixelCopter} <./images/pixelcopter-train
+ing.png>] <./images/pixelcopter-transfer.png, id=176, 1341.01pt x 549.05125pt>
+File: ./images/pixelcopter-transfer.png Graphic file (type png)
+
+<use ./images/pixelcopter-transfer.png>
+Package pdftex.def Info: ./images/pixelcopter-transfer.png used on input line 4
+75.
+(pdftex.def)             Requested size: 397.48499pt x 162.73947pt.
+
+Overfull \hbox (9.20251pt too wide) in paragraph at lines 482--499
+ [][] 
+ []
+
+
+LaTeX Warning: `!h' float specifier changed to `!ht'.
+
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+ [7pdfTeX warning (ext4): destination with the same identifier (name{figure.4})
  has been already used, duplicate ignored
 
 \AtBegShi@Output ...ipout \box \AtBeginShipoutBox 
                                                   \fi \fi 
-l.16 
-     pdfTeX warning (ext4): destination with the same identifier (name{figure.3
-}) has been already used, duplicate ignored
+l.512 
+      pdfTeX warning (ext4): destination with the same identifier (name{figure.
+5}) has been already used, duplicate ignored
 
 \AtBegShi@Output ...ipout \box \AtBeginShipoutBox 
                                                   \fi \fi 
-l.16 
-      <./images/pixelcopter-training.png> <./images/pixelcopter-transfer.png>]
+l.512 
+       <./images/pixelcopter-new-features.png> <./images/pixelcopter-transfer.p
+ng>] [8pdfTeX warning (ext4): destination with the same identifier (name{table.
+2}) has been already used, duplicate ignored
+
+\AtBegShi@Output ...ipout \box \AtBeginShipoutBox 
+                                                  \fi \fi 
+l.535 
+      ] (./final.bbl
 Underfull \hbox (badness 4505) in paragraph at lines 53--56
 []\T1/ptm/m/n/10 (+20) Norman Tasfi.  Pygame learn-ing en-vi-ron-ment.  []$\T1/
 cmtt/m/n/10 https : / / github . com / ntasfi /
  []
 
 )
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 343.
- [7]
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 343.
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 552.
+ [9]
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 552.
  (./final.aux)
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 343.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 343.
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 552.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 552.
 Package rerunfilecheck Info: File `final.out' has not changed.
-(rerunfilecheck)             Checksum: 390303860570B6436944E7C3C92710D9;867.
-Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 343.
+(rerunfilecheck)             Checksum: 547A5C70B6B6C1AA439629CEDE1B22EF;1232.
+
+
+LaTeX Warning: Label(s) may have changed. Rerun to get cross-references right.
+
+Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 552.
  ) 
 Here is how much of TeX's memory you used:
- 9562 strings out of 492995
- 141583 string characters out of 6132704
- 272666 words of memory out of 5000000
- 12787 multiletter control sequences out of 15000+600000
- 36119 words of font info for 130 fonts, out of 8000000 for 9000
+ 9635 strings out of 492995
+ 142991 string characters out of 6132704
+ 274882 words of memory out of 5000000
+ 12832 multiletter control sequences out of 15000+600000
+ 36544 words of font info for 138 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 31i,15n,38p,298b,430s stack positions out of 5000i,500n,10000p,200000b,80000s
+ 31i,14n,38p,1010b,369s stack positions out of 5000i,500n,10000p,200000b,80000s
 {/usr/local/texlive/2017/texmf-dist/fonts/enc/dvips/base/8r.enc}{/usr/local/t
 exlive/2017/texmf-dist/fonts/enc/dvips/cm-super/cm-super-t1.enc}</usr/local/tex
 live/2017/texmf-dist/fonts/type1/public/amsfonts/cm/cmex10.pfb></usr/local/texl
@@ -979,10 +1047,10 @@ xmf-dist/fonts/type1/public/cm-super/sftt1000.pfb></usr/local/texlive/2017/texm
 f-dist/fonts/type1/urw/times/utmb8a.pfb></usr/local/texlive/2017/texmf-dist/fon
 ts/type1/urw/times/utmr8a.pfb></usr/local/texlive/2017/texmf-dist/fonts/type1/u
 rw/times/utmri8a.pfb>
-Output written on final.pdf (7 pages, 613303 bytes).
+Output written on final.pdf (9 pages, 1542500 bytes).
 PDF statistics:
- 216 PDF objects out of 1000 (max. 8388607)
- 185 compressed objects within 2 object streams
- 43 named destinations out of 1000 (max. 500000)
- 19592 words of extra memory for PDF output out of 20736 (max. 10000000)
+ 261 PDF objects out of 1000 (max. 8388607)
+ 221 compressed objects within 3 object streams
+ 53 named destinations out of 1000 (max. 500000)
+ 19647 words of extra memory for PDF output out of 20736 (max. 10000000)
 
