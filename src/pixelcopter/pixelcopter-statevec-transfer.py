@@ -94,7 +94,7 @@ model.add(Dense(256))
 model.add(Activation('relu'))
 model.add(Dense(128))
 model.add(Activation('relu'))
-model.add(Dense(16, trainable=False))
+model.add(Dense(16))
 model.add(Activation('relu'))
 model.add(Dense(nb_actions))
 model.add(Activation('linear'))
@@ -108,7 +108,7 @@ from rl.policy import LinearAnnealedPolicy, EpsGreedyQPolicy
 policy = LinearAnnealedPolicy(EpsGreedyQPolicy(), attr='eps', value_max=.2, value_min = .05, value_test = .01,
                             nb_steps = 150000)
 dqn = DQNAgent(model=model, nb_actions=nb_actions, policy = policy, memory=memory, processor=processor, nb_steps_warmup=100, gamma=.99, target_model_update=1e-2)
-dqn.compile(Adam(lr=4e-3), metrics=['mae'])
+dqn.compile(Adam(lr=4e-4), metrics=['mae'])
 
 p.display_screen = True
 
@@ -118,9 +118,9 @@ from time import time
 t = time()
 tb = TensorBoard(log_dir='../../logs/pixelcopter/{}'.format(t))
 
-# filepath='../../weights/pixelcopter/transfer-best.{}.hdf5'.format(t)
-# cp = ModelIntervalCheckpoint(filepath, verbose=1, interval=5000)
-dqn.fit(env, nb_steps=300000, visualize=True, verbose=1, callbacks = [tb])
+filepath='../../weights/pixelcopter/transfer-best.{}.hdf5'.format(t)
+cp = ModelIntervalCheckpoint(filepath, verbose=1, interval=5000)
+dqn.fit(env, nb_steps=150000, visualize=True, verbose=1, callbacks = [tb,cp])
 
 p.display_screen = True
 
