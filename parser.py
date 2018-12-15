@@ -20,7 +20,7 @@ def parse(file):
 
     print(file, ':')
     # print("Array of Steps: ", control)
-    control = control[:50]
+    control = control[250:]
     print("Average: ", np.average(control))
     print("St. Dev: ", np.std(control))
     print("Median: ", np.median(control))
@@ -31,7 +31,9 @@ def parse(file):
 
 for file in txt_files:
     parse(file)
-
+    # print(file)
+    # if file == 'testruns/oldfeatures.txt':
+    #     parse(file)
     # print('noT:')
     # print("Array of Steps: ", transfer_no_t)
     # print("Average: ", np.average(transfer_no_t))
